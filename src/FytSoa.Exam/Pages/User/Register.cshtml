@@ -1,0 +1,89 @@
+@page
+@model RegisterModel
+@{
+    Layout = "Shared/_LayoutUser";
+}
+
+<!-- Content
+    ================================================== -->
+<div uk-height-viewport="expand: true" class="uk-flex uk-flex-middle">
+    <div class="uk-width-1-3@m uk-width-1-2@s m-auto">
+        <div class="uk-card-default p-6 rounded">
+            <div class="my-4 uk-text-center">
+                <h2 class="mb-0">创建新帐户</h2>
+                <p class="my-2">填写空白以创建新帐户。</p>
+            </div>
+            <form id="register" class="uk-child-width-1-1 uk-grid-small" uk-grid>
+
+                <div>
+                    <div class="uk-form-group">
+                        <label class="uk-form-label"> 姓名</label>
+
+                        <div class="uk-position-relative w-100">
+                            <span class="uk-form-icon">
+                                <i class="icon-feather-user"></i>
+                            </span>
+                            <input class="uk-input" type="text" id="nickName" required  placeholder="Full name">
+                        </div>
+
+                    </div>
+                </div>
+                <div>
+                    <div class="uk-form-group">
+                        <label class="uk-form-label"> 邮箱</label>
+
+                        <div class="uk-position-relative w-100">
+                            <span class="uk-form-icon">
+                                <i class="icon-feather-mail"></i>
+                            </span>
+                            <input class="uk-input" type="email" id="email" required placeholder="name@example.com">
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="uk-width-1-2@s">
+                    <div class="uk-form-group">
+                        <label class="uk-form-label"> 密码</label>
+
+                        <div class="uk-position-relative w-100">
+                            <span class="uk-form-icon">
+                                <i class="icon-feather-lock"></i>
+                            </span>
+                            <input class="uk-input" id="password" type="password" required placeholder="********">
+                        </div>
+
+                    </div>
+                </div>
+                <div class="uk-width-1-2@s">
+                    <div class="uk-form-group">
+                        <label class="uk-form-label"> 确认密码</label>
+
+                        <div class="uk-position-relative w-100">
+                            <span class="uk-form-icon">
+                                <i class="icon-feather-lock"></i>
+                            </span>
+                            <input class="uk-input" id="confirmpwd" type="password" required placeholder="********">
+                        </div>
+
+                    </div>
+                </div>
+
+                <div>
+                    <div class="mt-4 uk-flex-middle uk-grid-small" uk-grid>
+                        <div class="uk-width-expand@s">
+                            <p> 已经有账号了 <a href="/user/login">去登录</a></p>
+                        </div>
+                        <div class="uk-width-auto@s">
+                            <input type="submit" class="button primary register-sub" value="注 册"/>
+                        </div>
+                    </div>
+                </div>
+                @Html.AntiForgeryToken()
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="/assets/js/user/register.js"></script>
+}

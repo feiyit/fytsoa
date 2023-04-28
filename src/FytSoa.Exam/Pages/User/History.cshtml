@@ -1,0 +1,109 @@
+@page
+
+@{
+    var type = Request.Query["type"];
+    var str = type.ToString() switch
+    {
+        "video" => "点播",
+        "live" => "直播",
+        "graphic" => "图文",
+        "lecturer" => "讲师",
+        "knowledge" => "知识库",
+        _ => ""
+        };
+}
+<div class="main_content_inner">
+
+    <h2 class="mt-lg-2 mb-sm-0"> @str </h2>
+
+    <div class="section-small">
+
+        <div uk-grid>
+            <div class="uk-width-1-4@m uk-flex-last@m">
+
+                <nav class="responsive-tab style-3 setting-menu uk-sticky"
+                     uk-sticky="top:30 ; offset:100; media:@@m ;bottom:true; animation: uk-animation-slide-top">
+                    <h4 class="mb-0 p-3 uk-visible@m"> 访问历史类型</h4>
+                    <hr class="m-0">
+                    <ul class="uk-form-controls">
+                        <li class="@(type == "video" ? "uk-active" : "")">
+                            <a href="/user/history?type=video">
+                                <label>
+                                    <input class="uk-radio" @(type == "video" ? "checked" : "") type="radio" name="radio1">
+                                    <span class="checkmark ml-2"> 点播 </span>
+                                </label>
+                            </a>
+                        </li>
+                        <li class="@(type == "live" ? "uk-active" : "")">
+                            <a href="/user/history?type=live">
+                                <label>
+                                    <input class="uk-radio" @(type == "live" ? "checked" : "") type="radio" name="radio1">
+                                    <span class="checkmark ml-2"> 直播 </span>
+                                </label>
+                            </a>
+                        </li>
+                        <li class="@(type == "graphic" ? "uk-active" : "")">
+                            <a href="/user/history?type=graphic">
+                                <label>
+                                    <input class="uk-radio" @(type == "graphic" ? "checked" : "") type="radio" name="radio1">
+                                    <span class="checkmark ml-2"> 图文 </span>
+                                </label>
+                            </a>
+                        </li>
+                        <li class="@(type == "lecturer" ? "uk-active" : "")">
+                            <a href="/user/history?type=lecturer">
+                                <label>
+                                    <input class="uk-radio" @(type == "lecturer" ? "checked" : "") type="radio" name="radio1">
+                                    <span class="checkmark ml-2"> 讲师 </span>
+                                </label>
+                            </a>
+                        </li>
+                        <li class="@(type == "knowledge" ? "uk-active" : "")">
+                            <a href="/user/history?type=knowledge">
+                                <label>
+                                    <input class="uk-radio" @(type == "knowledge" ? "checked" : "") type="radio" name="radio1">
+                                    <span class="checkmark ml-2"> 知识库 </span>
+                                </label>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="uk-width-3-4@m">
+                <div class="empty">
+                    <img src="/assets/images/empty.png" alt=""/>
+                    <p>暂无数据</p>
+                </div>
+
+                @* <a href="single-video.html" class="video-post video-post-list"> *@
+                @*     <!-- Blog Post Thumbnail --> *@
+                @*     <div class="video-post-thumbnail"> *@
+                @*         <span class="play-btn-trigger"></span> *@
+                @*         <span class="video-post-time">23:00</span> *@
+                @*         <img src="assets/images/video-thumbal/2.png" alt=""> *@
+                @*     </div> *@
+                @*     <!-- Blog Post Content --> *@
+                @*     <div class="video-post-content"> *@
+                @*         <button class="p-3 circle bg-secondary uk-align-right ml-2" *@
+                @*                 uk-tooltip="title: Clear Video ; pos: left" type="button" uk-close> *@
+                @*         </button> *@
+                @*         <h3> *@
+                @*             how to create a basic Sticky HTML element using the CSS fixed position property *@
+                @*         </h3> *@
+                @*         <span class="video-post-user">Jonathan Madano</span> *@
+                @*         <span class="video-post-date"> 2 weeks ago </span> *@
+                @*         <p> *@
+                @*             Lorem ipsum dolor sit amet liber tempor cum soluta nobis eleifend option congue *@
+                @*             nihil imperdiet doming id quod mazim placerat facer... *@
+                @*         </p> *@
+                @*     </div> *@
+                @* </a> *@
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>

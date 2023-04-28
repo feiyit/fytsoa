@@ -1,0 +1,25 @@
+@using FytSoa.Application.Cms
+@inject CmsSiteService _siteService
+@{
+    var site = await _siteService.GetAsync(1364837482360868864);
+}
+<!-- footer
+================================================== -->
+<div class="footer">
+    <div class="uk-grid-collapse" uk-grid>
+        <div class="uk-width-expand@s uk-first-column">
+            <p>@site.Copyright</p>
+        </div>
+        <div class="uk-width-auto@s">
+            <nav class="footer-nav-icon">
+                <ul>
+                    <li>
+                        <a href="#">
+                            <i class="icon-brand-dribbble"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

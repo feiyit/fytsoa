@@ -1,0 +1,547 @@
+@using FytSoa.Application.Cms
+@inject CmsSiteService _siteService
+@{
+    //var site = await _siteService.GetAsync(1364837482360868864);
+}
+<header>
+
+<!-- Logo-->
+<i class="header-traiger uil-bars"
+   uk-toggle="target: #wrapper ; cls: collapse-sidebar mobile-visible">
+</i>
+
+<!-- Logo-->
+<div id="logo">
+    <a href="/">
+        <img src="/assets/images/logo.png" alt="">
+    </a>
+    <a href="/">
+        <img src="/assets/images/logo-light.png" class="logo-inverse" alt="">
+    </a>
+</div>
+
+<!-- form search-->
+<div class="head_search">
+    <form>
+        <div class="head_search_cont">
+            <input value="" type="text" class="form-control"
+                   placeholder="请输入关键字，支持点播、直播、教师搜索" autocomplete="off">
+            <i class="s_icon uil-search-alt"></i>
+        </div>
+
+        <!-- Search box dropdown -->
+        <div uk-dropdown="pos: top;mode:click;animation: uk-animation-slide-bottom-small"
+             class="dropdown-search">
+            <!-- User menu -->
+
+            <ul class="dropdown-search-list">
+                <li class="list-title"> Recent Searches </li>
+                <li>
+                    <a href="single-video.html"> Adobe XD Design Free Tutorial .. </a>
+                </li>
+                <li>
+                    <a href="single-video.html"> How to create a basic Sticky HTML element .. </a>
+                </li>
+                <li>
+                    <a href="single-video.html">
+                        Learn How to Prototype Faster with Mockplus! in 2020
+                    </a>
+                </li>
+                <li>
+                    <a href="single-video.html">
+                        Adobe XD Design Tutorial Company Website Landing Page
+                        ..
+                    </a>
+                </li>
+                <div class="menu-divider">
+                    <li class="list-footer">
+                        <a href="your-history.html"> Searches History </a>
+                    </li>
+                </div>
+            </ul>
+
+        </div>
+
+
+    </form>
+</div>
+
+<!-- user icons -->
+<div class="head_user">
+
+<a href="javascript:void(0)" class="btn-upload uk-visible@s"> <i class="uil-cloud-upload"></i> Upload</a>
+
+<!-- upload dropdown box -->
+<div uk-dropdown="pos: top-right;mode:click ; animation: uk-animation-slide-bottom-small"
+     class="dropdown-notifications">
+
+    <!-- notivication header -->
+    <div class="dropdown-notifications-headline">
+        <h4>Upload Video</h4>
+    </div>
+
+    <!-- notification contents -->
+    <div class="dropdown-notifications-content uk-flex uk-flex-middle uk-flex-center text-center">
+
+
+        <div class="uk-flex uk-flex-column choose-upload  text-center">
+            <img src="/assets/images/upload.png" width="70" class="m-auto" alt="">
+            <p class="my-3">
+                Do you have a video wants to share us <br> please upload her ..
+            </p>
+            <div uk-form-custom>
+                <input type="file">
+                <a href="#" class="button soft-primary small"> Choose file</a>
+            </div>
+
+            <a href="#" class="uk-text-muted mt-3 uk-link"
+               uk-toggle="target: .choose-upload ;  animation: uk-animation-slide-right-small, uk-animation-slide-left-medium; queued: true">
+                Or Import Video
+            </a>
+        </div>
+
+        <div class="uk-flex uk-flex-column choose-upload" hidden>
+            <i class="uil-import icon-large text-muted"></i>
+            <p class="my-3"> Import videos from YouTube <br> Copy / Paste your video link here </p>
+            <form class="uk-grid-small" uk-grid>
+                <div class="uk-width-expand">
+                    <input type="text" class="uk-input uk-form-small" placeholder="Paste link">
+                </div>
+                <div class="uk-width-auto">
+                    <button type="submit" class="button soft-primary">
+                        Import
+                    </button>
+                </div>
+            </form>
+            <a href="#" class="uk-text-muted mt-3 uk-link"
+               uk-toggle="target: .choose-upload ; animation: uk-animation-slide-left-small, uk-animation-slide-right-medium; queued: true">
+                Or Upload Video
+            </a>
+        </div>
+
+
+    </div>
+    <hr class="m-0">
+    <div class="text-center uk-text-small py-2 uk-text-muted">
+        Your Video size Must be Maxmium 999MB
+    </div>
+</div>
+
+
+<!-- videos feed  -->
+<a href="#video" class="opts_icon" uk-toggle>
+    <i class="uil-youtube-alt"></i> <span>9+</span>
+</a>
+
+<!-- videos feed  offcanvas-->
+<div id="video" uk-offcanvas="overlay: true ;flip: true">
+    <div class="uk-offcanvas-bar uk-width-large">
+
+        <h3> Your Subscription </h3>
+        <hr class="mb-3" style="margin:0 -20px">
+        <button class="uk-offcanvas-close" type="button" uk-close></button>
+
+        <div class="video-list-small uk-child-width-1-1" uk-grid>
+
+            <div>
+                <a href="single-video.html" class="video-post video-post-list">
+                    <!-- Blog Post Thumbnail -->
+                    <div class="video-post-thumbnail">
+                        <span class="video-post-count">1.4M</span>
+                        <span class="video-post-time">23:00</span>
+                        <span class="play-btn-trigger"></span>
+
+                        <img src="/assets/images/video-thumbal/2.png" alt="">
+
+                    </div>
+
+                    <!-- Blog Post Content -->
+                    <div class="video-post-content">
+                        <h3> How to create a basic Sticky HTML element..</h3>
+                        <img src="/assets/images/avatars/avatar-3.jpg" alt="">
+                        <span class="video-post-user">Jonathan Madano</span>
+                        <span class="video-post-views">531k views</span>
+                        <span class="video-post-date"> 2 weeks ago </span>
+                    </div>
+                </a>
+            </div>
+
+            <div>
+                <a href="single-video.html" class="video-post video-post-list">
+                    <!-- Blog Post Thumbnail -->
+                    <div class="video-post-thumbnail">
+                        <span class="video-post-count">2.7k</span>
+                        <span class="video-post-time">40:00</span>
+                        <span class="play-btn-trigger"></span>
+                        <img src="/assets/images/video-thumbal/1.png" alt="">
+                    </div>
+                    <!-- Blog Post Content -->
+                    <div class="video-post-content">
+                        <h3> Learn how to create PHP singleton class </h3>
+                        <img src="/assets/images/avatars/avatar-2.jpg" alt="">
+                        <span class="video-post-user">Stella Johnson</span>
+                        <span class="video-post-views">938k views</span>
+                        <span class="video-post-date"> 3 weeks ago </span>
+                    </div>
+                </a>
+            </div>
+
+            <div>
+                <a href="single-video.html" class="video-post video-post-list">
+                    <!-- Blog Post Thumbnail -->
+                    <div class="video-post-thumbnail">
+                        <span class="video-post-count">2.3M</span>
+                        <span class="video-post-time">14:00</span>
+                        <span class="play-btn-trigger"></span>
+                        <img src="/assets/images/video-thumbal/3.png" alt="">
+                    </div>
+                    <!-- Blog Post Content -->
+                    <div class="video-post-content">
+                        <h3> Learn Creating Laravel Package Initializing ... </h3>
+                        <img src="/assets/images/avatars/avatar-5.jpg" alt="">
+                        <span class="video-post-user">Alex Dolgove</span>
+                        <span class="video-post-views">531k views</span>
+                        <span class="video-post-date"> 2 weeks ago </span>
+                    </div>
+                </a>
+            </div>
+
+            <div>
+                <a href="single-video.html" class="video-post video-post-list">
+                    <!-- Blog Post Thumbnail -->
+                    <div class="video-post-thumbnail">
+                        <span class="video-post-count">1.4M</span>
+                        <span class="video-post-time">23:00</span>
+                        <span class="play-btn-trigger"></span>
+                        <img src="/assets/images/video-thumbal/4.png" alt="">
+                    </div>
+                    <!-- Blog Post Content -->
+                    <div class="video-post-content">
+                        <h3> Learn how to upload files using Laravel .. </h3>
+                        <img src="/assets/images/avatars/avatar-4.jpg" alt="">
+                        <span class="video-post-user">Adrian Mohani</span>
+                        <span class="video-post-views">531k views</span>
+                        <span class="video-post-date"> 2 weeks ago </span>
+                    </div>
+                </a>
+            </div>
+
+            <div>
+                <a href="single-video.html" class="video-post video-post-list">
+                    <!-- Blog Post Thumbnail -->
+                    <div class="video-post-thumbnail">
+                        <span class="video-post-count">1.4M</span>
+                        <span class="video-post-time">23:00</span>
+                        <span class="play-btn-trigger"></span>
+                        <img src="/assets/images/video-thumbal/2.png" alt="">
+                    </div>
+
+                    <!-- Blog Post Content -->
+                    <div class="video-post-content">
+                        <h3> How to create a basic Sticky HTML element ..</h3>
+                        <img src="/assets/images/avatars/avatar-3.jpg" alt="">
+                        <span class="video-post-user">Jonathan Madano</span>
+                        <span class="video-post-views">531k views</span>
+                        <span class="video-post-date"> 2 weeks ago </span>
+                    </div>
+                </a>
+            </div>
+
+            <div>
+                <a href="single-video.html" class="video-post video-post-list">
+                    <!-- Blog Post Thumbnail -->
+                    <div class="video-post-thumbnail">
+                        <span class="video-post-count">2.7k</span>
+                        <span class="video-post-time">40:00</span>
+                        <span class="play-btn-trigger"></span>
+                        <img src="/assets/images/video-thumbal/1.png" alt="">
+                    </div>
+                    <!-- Blog Post Content -->
+                    <div class="video-post-content">
+                        <h3> Learn how to create PHP singleton class </h3>
+                        <img src="/assets/images/avatars/avatar-2.jpg" alt="">
+                        <span class="video-post-user">Stella Johnson</span>
+                        <span class="video-post-views">938k views</span>
+                        <span class="video-post-date"> 3 weeks ago </span>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Message  notificiation dropdown -->
+<a href="javascript:void(0)" class="opts_icon">
+    <i class="uil-envelope-alt"></i> <span>4</span>
+</a>
+
+<!-- Message  notificiation dropdown -->
+<div uk-dropdown="pos: top-right;mode:click ; animation: uk-animation-slide-bottom-small"
+     class="dropdown-notifications">
+
+    <!-- notivication header -->
+    <div class="dropdown-notifications-headline">
+        <h4>Messages</h4>
+        <a href="javascript:void(0)">
+            <i class="icon-feather-settings" uk-tooltip="title: Message settings ; pos: left"></i>
+        </a>
+    </div>
+
+    <!-- notification contents -->
+    <div class="dropdown-notifications-content" data-simplebar>
+
+        <!-- notiviation list -->
+        <ul>
+            <li class="notifications-not-read">
+                <a href="#">
+                    <span class="notification-avatar">
+                        <img src="/assets/images/avatars/avatar-2.jpg" alt="">
+                    </span>
+                    <div class="notification-text notification-msg-text">
+                        <strong>Jonathan Madano</strong>
+                        <p>Okay.. Thanks for The Answer I will be waiting for your...</p>
+                        <span class="time-ago"> 2 hours ago </span>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <span class="notification-avatar">
+                        <img src="/assets/images/avatars/avatar-3.jpg" alt="">
+                    </span>
+                    <div class="notification-text notification-msg-text">
+                        <strong>Stella Johnson</strong>
+                        <p>
+                            Alex will explain you how to keep your videos privatly and all that...
+                        </p>
+                        <span class="time-ago"> 7 hours ago </span>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <span class="notification-avatar">
+                        <img src="/assets/images/avatars/avatar-1.jpg" alt="">
+                    </span>
+                    <div class="notification-text notification-msg-text">
+                        <strong>Alex Dolgove</strong>
+                        <p>
+                            Alia just joined Messenger! Be the first to send a
+                            welcome message..
+                        </p>
+                        <span class="time-ago"> 19 hours ago </span>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <span class="notification-avatar">
+                        <img src="/assets/images/avatars/avatar-4.jpg" alt="">
+                    </span>
+                    <div class="notification-text notification-msg-text">
+                        <strong>Adrian Mohani</strong>
+                        <p> Okay.. Thanks for The Answer I will be waiting for your... </p>
+                        <span class="time-ago"> Yesterday </span>
+                    </div>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+    <div class="dropdown-notifications-footer">
+        <a href="/user/message"> sell all <i class="icon-line-awesome-long-arrow-right"></i> </a>
+    </div>
+
+
+</div>
+
+
+<!-- notificiation icon  -->
+<a href="javascript:void(0)" class="opts_icon">
+    <i class="uil-bell"></i> <span>3</span>
+</a>
+
+<!-- notificiation dropdown -->
+<div uk-dropdown="pos: top-right;mode:click ; animation: uk-animation-slide-bottom-small"
+     class="dropdown-notifications">
+
+    <!-- notivication header -->
+    <div class="dropdown-notifications-headline">
+        <h4>Notifications </h4>
+        <a href="#">
+            <i class="icon-feather-settings"
+               uk-tooltip="title: Notifications settings ; pos: left">
+            </i>
+        </a>
+    </div>
+
+    <!-- notification contents -->
+    <div class="dropdown-notifications-content" data-simplebar>
+
+        <!-- notiviation list -->
+        <ul>
+            <li class="notifications-not-read">
+                <a href="#">
+                    <span class="notification-icon">
+                        <i class="icon-feather-thumbs-up"></i>
+                    </span>
+                    <span class="notification-text">
+                        <strong>Adrian Mohani</strong> Like Your Comment On Video
+                        <span class="text-primary">Learn Prototype Faster</span>
+                        <br> <span class="time-ago"> 9 hours ago </span>
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <span class="notification-icon">
+                        <i class="icon-feather-star"></i>
+                    </span>
+                    <span class="notification-text">
+                        <strong>Alex Dolgove</strong> Added New Review In Video
+                        <span class="text-primary">Full Stack PHP Developer</span>
+                        <br> <span class="time-ago"> 19 hours ago </span>
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <span class="notification-icon">
+                        <i class="icon-feather-message-circle"></i>
+                    </span>
+                    <span class="notification-text">
+                        <strong>Stella Johnson</strong> Replay Your Comments in
+                        <span class="text-primary">Adobe XD Tutorial</span>
+                        <br> <span class="time-ago"> 12 hours ago </span>
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <span class="notification-icon">
+                        <i class="icon-feather-share-2"></i>
+                    </span>
+                    <span class="notification-text">
+                        <strong>Adrian Mohani</strong> Like Your Comment On Video
+                        <span class="text-primary">Learn Prototype Faster</span>
+                        <br> <span class="time-ago"> Yesterday </span>
+                    </span>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+    <div class="dropdown-notifications-footer">
+        <a href="/user/message"> sell all <i class="icon-line-awesome-long-arrow-right"></i> </a>
+    </div>
+</div>
+
+
+<!-- profile -image -->
+<a class="opts_account">
+    @if (User.Identity!.IsAuthenticated)
+    {
+        <img src="@User.Claims.FirstOrDefault(c => c.Type == "Avatar")?.Value.UrlReplace()" alt="">
+    }
+    else
+    {
+        <img src="/assets/images/avatars/avatar-1.jpg" alt="">
+    }
+</a>
+
+<!-- profile dropdown-->
+<div uk-dropdown="pos: top-right;mode:click ; animation: uk-animation-slide-bottom-small"
+     class="dropdown-notifications small">
+    @if (User.Identity!.IsAuthenticated)
+    {
+        <!-- User Name / Avatar -->
+        <a href="javascript:void(0)">
+
+            <div class="dropdown-user-details">
+                <div class="dropdown-user-avatar">
+                    <img src="@User.Claims.FirstOrDefault(c => c.Type == "Avatar")?.Value.UrlReplace()" alt="">
+                </div>
+                <div class="dropdown-user-name">
+                    @User.Claims.FirstOrDefault(c => c.Type == "UserName")?.Value <span> 认证 <i class="uil-check"></i> </span>
+                </div>
+            </div>
+
+        </a>
+
+        <!-- User menu -->
+
+        <ul class="dropdown-user-menu">
+            <li>
+                <a href="/user/center"> <i class="uil-user"></i> 个人中心</a>
+            </li>
+            <li>
+                <a href="/user/message"> <i class="uil-bell"></i> 消息通知 </a>
+            </li>
+            <li>
+                <a href="/user/history?type=video"> <i class="uil-history"></i> 历史足迹 </a>
+            </li>
+            <li>
+                <a href="/user/setting"> <i class="uil-cog"></i> 账号设置</a>
+            </li>
+            <li>
+                <a href="/user/upgrade" style="color:#ff8400"> <i class="uil-bolt"></i> 升级等级</a>
+            </li>
+            <li>
+                <a href="#" id="night-mode" class="btn-night-mode">
+                    <i class="icon-feather-moon"></i> 夜间模式
+                    <span class="btn-night-mode-switch">
+                        <span class="uk-switch-button"></span>
+                    </span>
+                </a>
+            </li>
+            <div class="menu-divider">
+                <li>
+                    <a href="/user/help"> <i class="icon-feather-help-circle"></i> 帮助</a>
+                </li>
+                <li>
+                    <a href="/user/signout"> <i class="icon-feather-log-out"></i> 退出</a>
+                </li>
+            </div>
+        </ul>
+    }
+    else
+    {
+        <a href="javascript:void(0)">
+
+            <div class="dropdown-user-details">
+                <div class="dropdown-user-avatar">
+                    <img src="/assets/images/avatars/avatar-1.jpg" alt="">
+                </div>
+                <div class="dropdown-user-name">
+                    未登录
+                </div>
+            </div>
+        </a>
+        <ul class="dropdown-user-menu">
+            <li>
+                <a href="/user/login"> <i class="uil-user"></i> 登录</a>
+            </li>
+            <li>
+                <a href="/user/register"> <i class="uil-cog"></i> 注册 </a>
+            </li>
+            <li>
+                <a href="#" id="night-mode" class="btn-night-mode">
+                    <i class="icon-feather-moon"></i> 夜间模式
+                    <span class="btn-night-mode-switch">
+                        <span class="uk-switch-button"></span>
+                    </span>
+                </a>
+            </li>
+        </ul>
+    }
+
+
+</div>
+
+</div>
+
+</header>

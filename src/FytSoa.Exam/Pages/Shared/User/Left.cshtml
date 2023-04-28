@@ -1,0 +1,36 @@
+@{
+    var navIndex = Convert.ToInt32(ViewData["CenterNav"]);
+}
+<nav class="responsive-tab style-3 setting-menu"
+     uk-sticky="top:30 ; offset:100; media:@@m ;bottom:true; animation: uk-animation-slide-top">
+    <div class="uk-width-auto" style="text-align: center;padding: 20px 0;">
+        <img class="uk-border-circle" width="80" height="80" src="@User.Claims.FirstOrDefault(c => c.Type == "Avatar")?.Value.UrlReplace()" alt=""/>
+    </div>
+    <h3 class="uk-card-title uk-margin-remove-top" style="text-align: center">@User.Claims.FirstOrDefault(c => c.Type == "UserName")?.Value</h3>
+    <hr class="m-0 uk-visible@m">
+    <ul>
+        <li class="@(navIndex==1?"uk-active":"")">
+            <a href="/user/center"> <i class="uil-cog"></i> 个人中心 </a>
+        </li>
+        <li class="@(navIndex==2?"uk-active":"")">
+            <a href="/user/setting"> <i class="uil-user"></i> 账号设置 </a>
+        </li>
+        <li class="@(navIndex==3?"uk-active":"")">
+            <a href="/user/message"> <i class="uil-bell"></i> 消息通知</a>
+        </li>
+        <li class="@(navIndex==4?"uk-active":"")">
+            <a href="/user/security"> <i class="uil-shield-check"></i> 安全设置</a>
+        </li>
+        <div class="menu-divider">
+            <li class="@(navIndex==5?"uk-active":"")">
+                <a href="/user/upgrade"> <i class="uil-bolt"></i> 升级等级</a>
+            </li>
+            <li class="@(navIndex==6?"uk-active":"")">
+                <a href="/user/history?type=video"> <i class="uil-history"></i> 历史足迹</a>
+            </li>
+            <li class="@(navIndex==7?"uk-active":"")">
+                <a href="/user/signout"> <i class="uil-trash-alt"></i> 退出账号</a>
+            </li>
+        </div>
+    </ul>
+</nav>

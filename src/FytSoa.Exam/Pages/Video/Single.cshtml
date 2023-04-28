@@ -1,0 +1,291 @@
+@page "{id}"
+@using FytSoa.Application.Exam
+@using FytSoa.Application.Exam.Param
+@using FytSoa.Common.Utils
+@inject ExamCourseService _courseService
+@inject ExamCommentService _commentService
+@{
+    Layout = "Shared/_LayoutFull";
+    var id = RouteData.Values["id"]?.ToString();
+    await _courseService.ModifyAddHitsAsync(long.Parse(id));
+    var course = await _courseService.GetAsync(long.Parse(id));
+    ViewData["Nav"] = 1;
+    ViewData["Title"] = course.Title;
+    var list = await _courseService.GetPagesAsync(new ExamCourseSearchParam()
+    {
+        Type = 1,
+        Limit = 6
+    });
+
+    var commentCount = await _commentService.GetCountAsync(long.Parse(id));
+}
+
+<div class="main_content_inner" id="app">
+
+
+<div uk-grid>
+<div class="uk-width-2-3@m">
+
+    <div id="video-box" uk-sticky="top: 400 ;media : @@s"
+         cls-active="video-resized uk-animation-slide-right;">
+        <span class="icon-feather-x btn-box-close"
+              uk-toggle="target: #video-box ; cls: video-resized-hedden uk-animation-slide-left">
+        </span>
+
+        <div class="embed-video">
+            <div id="mse"></div>
+        </div>
+    </div>
+
+    <div class="video-info mt-3">
+
+        <!-- video title -->
+        <div class="video-info-title">
+            <h1>
+                @Html.Raw(course.Title)
+            </h1>
+        </div>
+
+        <div class="uk-flex uk-flex-between">
+
+            <div class="video-info-details">
+                <span>@course.Hits 次播放 </span>
+            </div>
+            <div class="video-likes">
+                <div class="like-btn" uk-tooltip="I like it">
+                    <i class="uil-thumbs-up"></i>
+                    <span class="likes">@course.Support.Praise</span>
+                </div>
+                <div class="video-info-element">
+                    <div class="views-bar"></div>
+                    <div class="views-bar blue" style="width: @SiteUtils.Sale(course.Support.Praise, course.Support.Tread)"></div>
+                </div>
+                <div class="like-btn" uk-tooltip="I Hate it">
+                    <i class="uil-thumbs-down"></i>
+                    <span class="likes">@course.Support.Tread</span>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="uk-flex uk-flex-between uk-flex-middle" uk-grid>
+            <div class="user-details-card uk-width-expand">
+                <a href="/lecturer/single/@course.TeacherId" class="uk-flex">
+                    <div class="user-details-card-avatar">
+                        <img src="@course.Teacher.Avatar.UrlReplace()" alt="">
+                    </div>
+                    <div class="user-details-card-name">
+                        @Html.Raw(course.Teacher.Name) <span> @Html.Raw(course.Teacher.PostName) - @Html.Raw(course.Teacher.ProfessionCode.Name) </span>
+                    </div>
+                </a>
+            </div>
+            <div class="uk-width-auto uk-flex">
+
+
+                <div class="btn-subscribe">
+                    <a href="javascript:void(0)" class="button primary add-focus">
+                        <i class="icon-feather-plus"></i>
+                        关注
+                    </a>
+                    <span class="subs-amount">@course.Teacher.Focus</span>
+                </div>
+
+            </div>
+        </div>
+
+        <hr class="mt-0 mb-2">
+
+
+        <h3> 内容</h3>
+        @Html.Raw(course.Content)
+
+    </div>
+
+    <hr>
+
+    <div class="comments mt-4">
+        <h3> 评论 <span class="comments-amount">@commentCount</span> </h3>
+
+        <ul>
+            <li v-for="it in list.items">
+                <div class="avatar">
+                    <img :src="it.user.headPic" alt="">
+                </div>
+                <div class="comment-content">
+
+                    <div class="comment-by">
+                        {{it.user.nickName}}<span>{{it.createTime}}</span>
+                        <a href="javascript:void(0)" class="reply">
+                            <i class="icon-line-awesome-undo"></i>
+                            回复
+                        </a>
+                        <a class="hidden reply-close">
+                            <i class="uil-minus"></i>
+                            关闭
+                        </a>
+                    </div>
+                    <p>
+                        {{it.content}}
+                    </p>
+                </div>
+                <div class="comment-reply hidden">
+                    <textarea  v-model="replyText" class="uk-textarea uk-text-small" placeholder="请输入您要评论的内容..."
+                                                                                                    style=" height:65px;"></textarea>
+                    <div class="uk-grid-margin">
+                        <input type="button" value="提交" class="button primary" @@click="replyUser(it.userId,it.id)">
+                    </div>
+                </div>
+                <ul v-if="it.replyBody.length>0">
+                    <li v-for="row in it.replyBody">
+                        <div class="avatar">
+                            <img src="/assets/images/avatars/avatar-2.jpg" alt="">
+                        </div>
+                        <div class="comment-content">
+                            <div class="comment-by">
+                                {{row.nickName}}@@{{row.byNickName}}
+                                <a href="javascript:void(0)" class="reply">
+                                    <i class="icon-line-awesome-undo"></i>
+                                    回复
+                                </a>
+                                <a class="hidden reply-close">
+                                    <i class="uil-minus"></i>
+                                    关闭
+                                </a>
+                            </div>
+                            <p>
+                                {{row.content}}
+                            </p>
+                        </div>
+                        <div class="comment-reply hidden">
+                            <textarea v-model="replyText" class="uk-textarea uk-text-small" placeholder="请输入您要评论的内容..."
+                                                                        style=" height:65px;"></textarea>
+                            <div class="uk-grid-margin">
+                                <input type="button" value="提交" class="button primary" @@click="replyUser(row.byUserId,it.id)">
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+    <div class="comments">
+        <ul>
+            <li>
+                <div class="avatar">
+                    <img src="/assets/images/avatars/avatar-2.jpg" alt="">
+                </div>
+                <div class="comment-content">
+                    <form class="uk-grid-small" uk-grid>
+                        <div class="uk-width-1-1@s">
+                            <label class="uk-form-label">评论内容</label>
+                            <textarea id="comment-text" class="uk-textarea uk-text-small" placeholder="请输入您要评论的内容..."
+                                                    style=" height:160px;margin-top: 10px;"></textarea>
+                        </div>
+                        <div class="uk-grid-margin">
+                            <input type="button" id="goComment" value="提交" class="button primary">
+                        </div>
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" class="cid" value="@course.Id">
+                        <input type="hidden" class="lecut-id" value="@course.TeacherId">
+                        <input type="hidden" class="user-id" value="@User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value">
+                    </form>
+
+                </div>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
+<div class="uk-width-expand@m">
+
+    <div class="uk-flex uk-flex-middle uk-flex-between px-1 pb-3">
+        <p class="mb-0 uk-h5"> 相关视频 </p>
+
+        <label class="btn-switch">
+            <input type="checkbox">
+            <span class="btn-switch-slider" uk-toggle="target: #wrapper; cls: menu-small"></span>
+        </label>
+
+    </div>
+    <div class="video-list-small uk-child-width-1-1@m uk-child-width-1-2@s" uk-grid>
+
+        @{
+            foreach (var item in list.Items)
+            {
+                <div>
+                    <a href="/video/single/@item.Id" class="video-post video-post-list" title="@Html.Raw(item.Title) ">
+                        <!-- Blog Post Thumbnail -->
+                        <div class="video-post-thumbnail">
+                            <span class="video-post-count">@item.Hits</span>
+                            <span class="video-post-time"></span>
+                            <span class="play-btn-trigger"></span>
+
+                            <img src="@item.Cover.UrlReplace()" alt="@Html.Raw(item.Title)">
+
+                        </div>
+
+                        <!-- Blog Post Content -->
+                        <div class="video-post-content">
+                            <h3> @Html.Raw(item.Title.CutString(40)) </h3>
+                            <img src="@item.Teacher.Avatar.UrlReplace()" alt="@Html.Raw(item.Teacher.Name)">
+                            <span class="video-post-user">@Html.Raw(item.Teacher.Name)</span>
+                            <span class="video-post-views ml-0">@Html.Raw(item.Teacher.PostName)</span>
+                            <span class="video-post-date"> @Html.Raw(item.Teacher.ProfessionCode?.Name) </span>
+                            <!-- option menu -->
+                            <span class="btn-option">
+                                <i class="icon-feather-more-vertical"></i>
+                            </span>
+                            <div class="dropdown-option-nav"
+                                 uk-dropdown="pos: bottom-right ;mode : hover ;animation: uk-animation-slide-bottom-small">
+                                <ul>
+                                    <li>
+                                        <span> <i class="uil-history"></i> 立即观看</span>
+                                    </li>
+                                    <li>
+                                        <span> <i class="uil-bookmark"></i> 加入书签</span>
+                                    </li>
+                                    <li>
+                                        <span> <i class="uil-share-alt"></i> 分享</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        }
+
+    </div>
+</div>
+</div>
+</div>
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/vue@2" type="text/javascript"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js" type="text/javascript"></script>
+    <script src="//unpkg.byted-static.com/xgplayer/2.31.2/browser/index.js" type="text/javascript"></script>
+    <script src="/assets/js/comment.js" type="text/javascript"></script>
+    <script>
+    $(document).ready(function(){
+        let player = new Player({
+          id: 'mse',
+          url: '@course.Urls.UrlReplace()',
+          fluid: true,
+          videoInit: true,
+          poster: '@course.Cover.UrlReplace()',
+          pip: true,
+          playbackRate: [0.5, 0.75, 1, 1.5, 2],
+          defaultPlaybackRate: 1,
+          rotateFullscreen: true,
+          download: true,
+          lang: 'zh-cn',
+        });
+    })
+    </script>
+}
