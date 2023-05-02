@@ -8,34 +8,36 @@
 
 ### 前端
 
-[<img src=https://img.shields.io/badge/vue.js-3.x-red>](https://vuejs.org/) [<img src=https://img.shields.io/badge/element--plus-latest-yellow>  ](https://element-plus.gitee.io/zh-CN/)  
+[<img src=https://img.shields.io/badge/vue.js-3.x-red>](https://vuejs.org/) [<img src=https://img.shields.io/badge/element--plus-latest-yellow> ](https://element-plus.gitee.io/zh-CN/)
 
 ### 服务端
 
-[<img src=https://img.shields.io/badge/netcore-6.x-success>](https://dotnet.microsoft.com/en-us/download) [<img src=https://img.shields.io/badge/orm-sqlsugar-yellow>  ](https://www.donet5.com/Home/Doc)  [<img src=https://img.shields.io/badge/cache-redis-blue>  ](https://redis.io/)   
+[<img src=https://img.shields.io/badge/netcore-6.x-success>](https://dotnet.microsoft.com/en-us/download) [<img src=https://img.shields.io/badge/orm-sqlsugar-yellow> ](https://www.donet5.com/Home/Doc) [<img src=https://img.shields.io/badge/cache-redis-blue> ](https://redis.io/)
 
-#### 演示地址： [fytsoa](http://114.115.174.32:5100/admin/index.html)
+#### 演示地址： [fytsoa](http://103.133.178.241:5100/admin/index.html)
 
 ```
-超管账号：admin    密码：admin    
-租户账号：fyadmin 密码：123456
+账号：admin    密码：admin123
+租户：fyadmin 密码：123456
 ```
 
-### Swagger增强UI  -关联项目
+#### Linux 部署： [园子](https://www.cnblogs.com/fuyu-blog/p/17367321.html)
+
+### Swagger 增强 UI -关联项目
 
 [fytapi.mui](https://gitee.com/feiyit/fytapi.mui)
 
 ### 介绍
 
-FytSoa Admin是一个快速搭建中后台解决方案，后台基于NetCore 6 和前端VUE3+Element+Plus实现。  
+FytSoa Admin 是一个快速搭建中后台解决方案，后台基于 NetCore 6 和前端 VUE3+Element+Plus 实现。  
 使用最新的前沿技术栈，提供各类使用组件方便在业务开发时调用，并且持续性的提供丰富的业务模块，帮助你快速搭建企业级中后台任务。  
-支持数据分离多租户平台（SaaS）  
+支持数据分离多租户平台（SaaS）
 
-[前端基于SCUI搭建](https://gitee.com/lolicode/scui)  
+[前端基于 SCUI 搭建](https://gitee.com/lolicode/scui)
 
 > 表格支持右击快捷键菜单  
 > 表格自定义列-打印  
-> 表格自定义列-导出    
+> 表格自定义列-导出
 
 ### 架构图
 
@@ -47,9 +49,9 @@ FytSoa Admin是一个快速搭建中后台解决方案，后台基于NetCore 6 �
 
 > 模块化：全新的架构和模块化的开发机制，便于灵活扩展和二次开发
 
-> 动态API
+> 动态 API
 
-> DDD模式-领域驱动设计
+> DDD 模式-领域驱动设计
 
 ### 技术点
 
@@ -78,7 +80,7 @@ FytSoa Admin是一个快速搭建中后台解决方案，后台基于NetCore 6 �
 
 # 访问接口
 
-打开浏览器：访问  http://localhost:5100/fytapiui/index.html   
+打开浏览器：访问  http://localhost:5100/fytapiui/index.html
 如看到Swagger增强FytApi.MUI接口文档说明项目启动成
 ```
 
@@ -98,7 +100,7 @@ cnpm i  或者  npm i
 npm run serve
 ```
 
-启动完成后浏览器访问 http://localhost:2800  
+启动完成后浏览器访问 http://localhost:2800
 
 ### 项目截图
 
@@ -115,11 +117,11 @@ npm run serve
 <img src=https://gitee.com/feiyit/fytsoa/raw/master/doc/img/menu.jpg width=100% />  
 <img src=https://gitee.com/feiyit/fytsoa/raw/master/doc/img/message.jpg width=100% />  
 <img src=https://gitee.com/feiyit/fytsoa/raw/master/doc/img/site.jpg width=100% />  
-<img src=https://gitee.com/feiyit/fytsoa/raw/master/doc/img/vote.jpg width=100% />    
+<img src=https://gitee.com/feiyit/fytsoa/raw/master/doc/img/vote.jpg width=100% />
 
 ## 交流
 
-<img src=https://gitee.com/feiyit/fytsoa/raw/master/doc/img/erweima-wx.jpg  />   
+<img src=https://gitee.com/feiyit/fytsoa/raw/master/doc/img/erweima-wx.jpg  />
 
 ## 支持
 
