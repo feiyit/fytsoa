@@ -214,7 +214,6 @@ export default {
 			templateIdOptions: [],
 			parentProps: {
 				multiple: false,
-				checkStrictly: true,
 				expandTrigger: "hover",
 				label: "label",
 				value: "value",

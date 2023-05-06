@@ -255,7 +255,7 @@ export default {
 			},
 			isSaveing: false,
 			visible: false,
-			cascaderKey:0,
+			cascaderKey: 0,
 			formData: {
 				id: 0,
 				title: undefined,
@@ -360,7 +360,6 @@ export default {
 			columnIdOptions: [],
 			columnIdProps: {
 				multiple: false,
-				checkStrictly: true,
 				expandTrigger: "hover",
 				label: "label",
 				value: "value",
