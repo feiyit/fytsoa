@@ -80,6 +80,11 @@ public class SysAdminDto : AppEntity
     /// 是否删除
     /// </summary>
     public bool IsDel { get; set; } = false;
+    
+    /// <summary>
+    /// 是否超级管理员
+    /// </summary>
+    public bool IsSuper { get; set; } = false;
 
     /// <summary>
     /// 备注

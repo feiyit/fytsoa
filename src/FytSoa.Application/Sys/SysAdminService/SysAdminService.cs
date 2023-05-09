@@ -96,6 +96,26 @@ public class SysAdminService : IApplicationService
         var code = MemoryService.Default.GetCache<string>(KeyUtils.CAPTCHACODE+loginParam.CodeKey);
         if (!string.Equals(code, loginParam.Code, StringComparison.CurrentCultureIgnoreCase)) throw new ArgumentException("验证码输入错误！~");
 
+        //判断是否为超级管理员
+        var superAccount = AppUtils.Configuration["SuperUser:Account"];
+        var superPassWord = AppUtils.Configuration["SuperUser:Password"];
+        if (loginParam.Account==superAccount)
+        {
+            if (loginParam.Password.AESEncrypt()!=superPassWord.AESEncrypt())
+            {
+                throw new BusinessException("密码输入错误！~");
+            }
+
+            return new SysAdminDto()
+            {
+                Id=1,
+                IsSuper = true,
+                TenantId = 0,
+                Avatar = "/upload/avatar/avatar-5.jpeg",
+                FullName="超级管理员"
+            };
+        }
+        
         var model = await _thisRepository
             .AsQueryable()
             .Filter(null,true)
