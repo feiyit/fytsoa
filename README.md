@@ -121,7 +121,7 @@ npm run serve
 
 ## 交流
 
-<img src=https://gitee.com/feiyit/fytsoa/raw/master/doc/img/erweima-wx.jpg  />
+<img src=https://gitee.com/feiyit/fytsoa/raw/master/doc/img/erweima-wx0509.jpg  />
 
 ## 支持
 
