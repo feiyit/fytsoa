@@ -49,6 +49,7 @@ public class SysAdminService : IApplicationService
             .WhereIF(!string.IsNullOrEmpty(param.Status), m => m.Status == (param.Status == "1"))
             .WhereIF(param.Id!=1 && param.Id!=0,m=> SqlFunc.Subqueryable<SysAdminRole>().Where(r=>r.AdminId==m.Id && r.RoleId==param.Id).Any())
             .WhereIF(param.OrgId!=0,m=>m.OrganizeId==param.OrgId)
+            .Filter(null,true)
             .Includes(m=>m.OrganizeObj)
             .OrderByDescending(m=>m.Id)
             .ToPageAsync(param.Page, param.Limit);

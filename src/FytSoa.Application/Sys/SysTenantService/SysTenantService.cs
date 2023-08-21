@@ -103,7 +103,7 @@ public class SysTenantService : IApplicationService
             TenantId =  model.TenantId,
             OrganizeId = orgId,
             LoginAccount = model.Account,
-            LoginPassWord = model.PassWord,
+            LoginPassWord = model.PassWord.MDString(),
             Avatar = "/upload/avatar/6.jpg",
             FullName = model.Person,
             Mobile = model.Phone
