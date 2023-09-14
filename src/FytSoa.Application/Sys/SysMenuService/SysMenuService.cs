@@ -354,57 +354,77 @@ public class SysMenuService : IApplicationService
     /// <returns></returns>
     public async Task<AuthorityDto> GetAuthorityMenuAsync()
     {
-        var adminRepository = _thisRepository.ChangeRepository<SugarRepository<SysAdmin>>();
-        //根据用户查询角色ID
-        var adminModel = await adminRepository.AsQueryable()
-            .Filter(null,true)
-            .FirstAsync(m => m.Id == AppUtils.LoginId);
-        var adminRole = await _adminRoleRepository.GetListAsync(m => m.AdminId == AppUtils.LoginId);
-        var roleIds = adminRole.Select(m=>m.RoleId.ToString()).ToList();
-        
-        //处理 角色上级 继承
-        var adminRoleList = await _roleRepository.GetListAsync(m => roleIds.Contains(m.Id.ToString()));
-        var adminRoleIdArr = adminRoleList.SelectMany(item => item.ParentIdList).ToList();
-        adminRoleIdArr = adminRoleIdArr.Distinct().ToList();
-        //根据角色查询授权的菜单Id集合
-        var permissionRepository = _thisRepository.ChangeRepository<SugarRepository<SysPermission>>();
-        var permissionList = await permissionRepository
-            .AsQueryable()
-            .Filter(null,true)
-            .Where(m => adminRoleIdArr.Contains(m.RoleId.ToString()))
-            .ToListAsync();
-        permissionList = permissionList.DistinctBy(m=>m.MenuId).ToList();
-        
-        #region 保存授权api
-
-        var apiList = new List<SysMenuApiUrl>();
-        foreach (var item in permissionList)
-        {
-            apiList.AddRange(item.Api);
-        }
-        RedisService.Instance.SetJson(KeyUtils.AUTHORIZZATIONAPI+":"+adminModel.Id, apiList);
-        #endregion
-        //查询菜单集合
-        var menuIds = permissionList.Select(m => m.MenuId).ToList();
-
-        //根据菜单ID查询菜单详细
-        var menuList = await _thisRepository
-            .AsQueryable()
-            .Where(m => menuIds.Contains(m.Id))
-            .Filter(null,true)
-            .OrderBy(m=>m.Sort)
-            .ToListAsync();
-        
-        #region 处理指令级资源权限
-
+        List<SysMenu> menuList;
         var directiveList = new List<string>();
-        foreach (var item in permissionList)
+        if (AppUtils.LoginId==1)
         {
-            if (item.Api.Count==0) continue;
-            var directiveMenu = menuList.FirstOrDefault(m => m.Id == item.MenuId);
-            directiveList.AddRange(item.Api.Select(m => m.code).Select(row => directiveMenu?.Code + ":" + row));
+            //超级管理员
+            menuList = await _thisRepository
+                .AsQueryable()
+                .Filter(null,true)
+                .Where(m=>m.TenantId==0)
+                .OrderBy(m=>m.Sort)
+                .ToListAsync();
+            foreach (var item in menuList)
+            {
+                if (item.Api.Count==0) continue;
+                directiveList.AddRange(item.Api.Select(row => item.Code + ":" + row.code));
+            }
         }
-        #endregion
+        else
+        {
+            var adminRepository = _thisRepository.ChangeRepository<SugarRepository<SysAdmin>>();
+            //根据用户查询角色ID
+            var adminModel = await adminRepository.AsQueryable()
+                .Filter(null,true)
+                .FirstAsync(m => m.Id == AppUtils.LoginId);
+            var adminRole = await _adminRoleRepository.GetListAsync(m => m.AdminId == AppUtils.LoginId);
+            var roleIds = adminRole.Select(m=>m.RoleId.ToString()).ToList();
+            
+            //处理 角色上级 继承
+            var adminRoleList = await _roleRepository.GetListAsync(m => roleIds.Contains(m.Id.ToString()));
+            var adminRoleIdArr = adminRoleList.SelectMany(item => item.ParentIdList).ToList();
+            adminRoleIdArr = adminRoleIdArr.Distinct().ToList();
+            //根据角色查询授权的菜单Id集合
+            var permissionRepository = _thisRepository.ChangeRepository<SugarRepository<SysPermission>>();
+            var permissionList = await permissionRepository
+                .AsQueryable()
+                .Filter(null,true)
+                .Where(m => adminRoleIdArr.Contains(m.RoleId.ToString()))
+                .ToListAsync();
+            permissionList = permissionList.DistinctBy(m=>m.MenuId).ToList();
+            
+            #region 保存授权api
+
+            var apiList = new List<SysMenuApiUrl>();
+            foreach (var item in permissionList)
+            {
+                apiList.AddRange(item.Api);
+            }
+            RedisService.Instance.SetJson(KeyUtils.AUTHORIZZATIONAPI+":"+adminModel.Id, apiList);
+            #endregion
+            //查询菜单集合
+            var menuIds = permissionList.Select(m => m.MenuId).ToList();
+
+            //根据菜单ID查询菜单详细
+            menuList = await _thisRepository
+                .AsQueryable()
+                .Where(m => menuIds.Contains(m.Id))
+                .Filter(null,true)
+                .OrderBy(m=>m.Sort)
+                .ToListAsync();
+            
+            #region 处理指令级资源权限
+
+            foreach (var item in permissionList)
+            {
+                if (item.Api.Count==0) continue;
+                var directiveMenu = menuList.FirstOrDefault(m => m.Id == item.MenuId);
+                directiveList.AddRange(item.Api.Select(m => m.code).Select(row => directiveMenu?.Code + ":" + row));
+            }
+            #endregion
+            
+        }
         
         var resMenu = new List<AuthorityMenuDto>();
         foreach (var item in menuList.Where(m => m.ParentId == 0).OrderBy(m => m.Sort))
