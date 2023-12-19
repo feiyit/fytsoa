@@ -14,10 +14,7 @@ public static  class SwaggerConfig
         new SwaggerVersion {Version="v2",Title = "内容",Code = "Cms"},
         new SwaggerVersion {Version="v3",Title = "会员",Code = "Mem"},
         new SwaggerVersion {Version="v4",Title = "商城",Code = "Shop"},
-        new SwaggerVersion {Version="v5",Title = "APP",Code = "App"},
         new SwaggerVersion {Version="v6",Title = "课程",Code = "Exam"},
-        new SwaggerVersion {Version="v7",Title = "CRM",Code = "Crm"},
-        new SwaggerVersion {Version="v8",Title = "HR",Code = "Hr"}
     };
     public static void AddSwaggerConfiguration(this IServiceCollection services)
         {
