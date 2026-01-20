@@ -1,0 +1,50 @@
+{
+  "name": "fytadmin",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "packageManager": "pnpm@10.15.1",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "type-check": "vue-tsc -b",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
+    "echarts": "^6.0.0",
+    "element-plus": "^2.11.8",
+    "vue": "^3.5.24",
+    "vue-echarts": "^8.0.1"
+  },
+  "devDependencies": {
+    "@iconify/vue": "5.0.0",
+    "@shene/table": "1.0.0-alpha.24",
+    "@tailwindcss/postcss": "^4.1.17",
+    "@tinymce/tinymce-vue": "^6.3.0",
+    "@types/crypto-js": "^4.2.2",
+    "@types/node": "^24.10.1",
+    "@types/nprogress": "^0.2.3",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/tsconfig": "^0.8.1",
+    "@vueuse/core": "^14.0.0",
+    "autoprefixer": "^10.4.22",
+    "axios": "^1.13.2",
+    "crypto-js": "^4.2.0",
+    "dayjs": "1.11.19",
+    "nprogress": "^0.2.0",
+    "pinia": "^3.0.4",
+    "postcss": "^8.5.6",
+    "sass-embedded": "^1.93.3",
+    "tailwindcss": "^3.4.18",
+    "tinymce": "^8.2.1",
+    "typescript": "~5.9.3",
+    "unplugin-auto-import": "^20.2.0",
+    "unplugin-vue-setup-extend-plus": "^1.0.1",
+    "vite": "^7.2.4",
+    "vue-cropperjs": "^5.0.0",
+    "vue-router": "^4.6.3",
+    "vue-tsc": "^3.1.4",
+    "vuedraggable": "^4.1.0"
+  }
+}

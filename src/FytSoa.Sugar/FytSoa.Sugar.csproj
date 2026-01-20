@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="SqlSugarCore" Version="5.1.4.208" />
+        <PackageReference Include="Mapster" Version="7.3.0" />
+        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.21" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FytSoa.Common\FytSoa.Common.csproj" />
+      <ProjectReference Include="..\FytSoa.Domain\FytSoa.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

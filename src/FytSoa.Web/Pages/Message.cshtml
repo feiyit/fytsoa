@@ -1,0 +1,142 @@
+@page "/message/{entitle}/{subtitle}"
+@{
+  var entitle = RouteData.Values["entitle"];
+  var subtitle = RouteData.Values["subtitle"];
+  var column = Site.Columns;
+  var nowColumn = column.Find(m => m.EnTitle == (string)subtitle!);
+  var parentColumn=column.Find(m => m.EnTitle == (string)entitle!);
+  ViewData["Title"] = nowColumn?.Title+ "_" + Site.CurrentSite.SeoTitle;
+  ViewData["Key"] = nowColumn?.KeyWord;
+  ViewData["Desc"] = nowColumn?.Summary;
+}
+<!-- 内页 Hero -->
+<section
+  class="relative bg-gray-950 text-white overflow-hidden pt-32 pb-24 lg:pt-40 lg:pb-28 border-b border-gray-800/60">
+  <div class="absolute inset-0">
+    <img src="/images/about-hq.jpg" alt="利鑫集团总部与城市天际线" class="w-full h-full object-cover opacity-40">
+  </div>
+</section>
+<section id="history" class="py-20 bg-white">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
+      <aside class="lg:w-85 lg:sticky lg:top-28 flex-none">
+        <div
+          class="bg-white rounded-3xl shadow-[0_18px_46px_rgba(15,23,42,0.16)] border border-gray-100 p-6">
+          <p class="text-[11px] font-semibold tracking-[0.35em] text-primary uppercase mb-4">
+            GROUP PROFILE
+          </p>
+          <h2 class="text-xl font-bold text-gray-900 mb-3">@parentColumn?.Title</h2>
+          <p class="text-xs text-gray-500 leading-relaxed mb-6">@parentColumn?.KeyWord</p>
+          <nav class="space-y-4">
+
+            @foreach (var item in column.Where(m=>m.ParentId==parentColumn.Id))
+            {
+              <a href="@Site.Href(item.TemplateId,(string)entitle!,item.EnTitle)" class="secondary-link@(item.EnTitle==(string)subtitle! ?" active":"")">
+                <span class="flex items-center">
+                  <span>@item.Title</span>
+                </span>
+                <span class="secondary-arrow">
+                  <i class="fas fa-chevron-right"></i>
+                </span>
+              </a>
+            }
+          </nav>
+          <div class="mt-6 pt-5 border-t border-gray-100 text-xs text-gray-500 space-y-3">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-phone-alt text-primary text-sm mt-0.5"></i>
+              <span>集团总机：@Site.CurrentSite.CompanyTel</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="fas fa-location-dot text-primary text-sm mt-0.5"></i>
+              <span>@Site.CurrentSite.CompanyAddress</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="fas fa-envelope text-primary text-sm"></i>
+              <span>商务合作：@Site.CurrentSite.CompanyEmail</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+      <div class="flex-1">
+        <div class="gap-12 lg:gap-16 items-start">
+          <h2 class="text-sm font-bold tracking-[0.3em] text-primary uppercase mb-4">ONLINE MESSAGE</h2>
+          <h3 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">请留下您的需求</h3>
+          <p class="text-gray-600 text-sm leading-relaxed mb-6">
+            为了方便我们快速理解您的诉求并及时跟进，请尽量完整、准确地填写以下信息。我们承诺对您的个人信息严格保密，仅用于与您取得联系。
+          </p>
+
+          <!-- 提交结果提示 -->
+          <div id="message-success"
+               class="mb-4 hidden rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-xs text-emerald-700">
+            您的留言已提交成功，我们将尽快与您联系。
+          </div>
+          <div id="message-error"
+               class="mb-4 hidden rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-xs text-red-600">
+            提交失败，请检查表单信息或稍后重试。
+          </div>
+
+          <form id="online-message-form" class="space-y-4" method="post" action="/">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs text-gray-500 mb-1">姓名</label>
+                <input id="msg-name" name="name" type="text"
+                       class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                       placeholder="请输入您的姓名">
+                <p class="mt-1 text-[11px] text-red-500 hidden field-error" data-for="name"></p>
+              </div>
+              <div>
+                <label class="block text-xs text-gray-500 mb-1">联系方式</label>
+                <input id="msg-contact" name="contact" type="text"
+                       class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                       placeholder="手机或邮箱">
+                <p class="mt-1 text-[11px] text-red-500 hidden field-error" data-for="contact"></p>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">公司 / 机构</label>
+              <input id="msg-company" name="company" type="text"
+                     class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                     placeholder="可选填">
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs text-gray-500 mb-1">意向类型</label>
+                <select id="msg-intent" name="intent"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                  <option value="商务合作">商务合作</option>
+                  <option value="投资咨询">投资咨询</option>
+                  <option value="媒体采访">媒体采访</option>
+                  <option value="其他">其他</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs text-gray-500 mb-1">所在城市</label>
+                <input id="msg-city" name="city" type="text"
+                       class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                       placeholder="如：北京 / 上海 / 深圳">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">留言内容</label>
+              <textarea id="msg-content" name="message" rows="4"
+                      class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                      placeholder="请简要描述您的需求或问题（不少于 10 个字）"></textarea>
+              <p class="mt-1 text-[11px] text-red-500 hidden field-error" data-for="message"></p>
+            </div>
+            @Html.AntiForgeryToken()
+            <button type="submit"
+                    class="inline-flex items-center gap-2 px-8 py-3 bg-primary text-white text-sm font-bold rounded-lg shadow-md hover:bg-[#8e2320] transition-all tracking-[0.25em] uppercase">
+              提交留言 <i class="fas fa-paper-plane text-xs"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+@section Scripts
+{
+  <script src="/js/jquery/jquery.min.js"></script>
+  <script src="/js/jquery-validate/jquery.validate.min.js"></script>
+  <script src="/js/message.js"></script>
+}

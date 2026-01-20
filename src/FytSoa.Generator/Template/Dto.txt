@@ -1,0 +1,14 @@
+using System;
+using FytSoa.Common.Utils;
+using System.ComponentModel.DataAnnotations;
+using SqlSugar;
+
+namespace FytSoa.Application.{NameSpace};
+
+/// <summary>
+/// {TableNameDescribe}
+/// </summary>
+public class {TableName}Dto : AppEntity
+{
+{AttributeList}
+}

@@ -1,0 +1,96 @@
+﻿@using FytSoa.Application.Cms
+@using FytSoa.Application.Sys
+@using FytSoa.Application.Sys.Param
+@using FytSoa.Common.Cache
+@using FytSoa.Common.Utils
+@inject SysAdvInfoService _advService
+@inject CmsVariateService _variateService
+@{
+  var navActive = Convert.ToInt32(ViewData["Nav"]);
+  var advList = MemoryService.Default.GetCache<List<SysAdvInfoDto>>(KeyUtils.WEBCMSADV) ?? [];
+  if (advList.Count == 0)
+  {
+    var res = await _advService.GetPagesAsync(new CodePageParam());
+    advList = res.Items;
+    MemoryService.Default.SetCache(KeyUtils.WEBCMSADV, advList);
+  }
+  var variate = await _variateService.GetListAsync();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@ViewData["Title"]</title>
+  <meta name="keywords" content="@ViewData["Key"]"/>
+  <meta name="description" content="@ViewData["Desc"]"/>
+  <link rel="stylesheet" href="/style/tailwind.min.css">
+  <link rel="stylesheet" href="/style/main.css">
+  <link rel="stylesheet" href="/style/fontawesome-6.4.0.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 overflow-x-hidden">
+<div id="root">
+  <nav class="fixed top-0 w-full z-50 glass-nav shadow-sm border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-20">
+        <a class="flex-shrink-0 flex items-center gap-2 cursor-pointer" href="/">
+          <div class="bg-red-600 p-2 rounded-lg shadow-md"><i class="fas fa-heartbeat text-white text-xl"></i></div>
+          <span class="text-2xl font-bold text-gray-800 tracking-tight">@Site.CurrentSite.Name</span>
+        </a>
+        <div id="nav-links"
+             class="hidden flex flex-col items-start gap-4 absolute top-full left-0 bg-white border-t border-gray-100 shadow-md px-4 pb-4 lg:static lg:flex lg:flex-row lg:items-center lg:space-x-8 lg:bg-transparent lg:border-0 lg:shadow-none lg:px-0 lg:pb-0 lg:gap-0">
+          <div class="relative group"><a href="/"
+                                         class="w-full lg:w-auto text-gray-600 hover:text-red-600 font-medium transition-colors py-3 lg:py-4 flex items-center gap-1">首页</a>
+          </div>
+          @foreach (var item in Site.Columns.Where(m => m.ParentId == 2006203810179059712))
+          {
+            <div class="relative group@(Site.Columns.Where(m => m.ParentId == item.Id).Count()>0?" nav-dropdown-parent":"")">
+              <a href="@item.LinkUrl"
+                 class="w-full lg:w-auto text-gray-600 hover:text-red-600 font-medium transition-colors py-3 lg:py-4 flex items-center gap-1">
+                @item.Title
+                @{
+                  if (Site.Columns.Where(m => m.ParentId == item.Id).Count()>0)
+                  {
+                    <i
+                      class="fas fa-chevron-down text-[10px] transition-transform duration-300 group-hover:rotate-180"></i>
+                  }
+                }
+              </a>
+              @{
+                if (Site.Columns.Where(m => m.ParentId == item.Id).Count()>0)
+                {
+                  <div class="nav-dropdown">
+                    @foreach (var row in Site.Columns.Where(m => m.ParentId == item.Id))
+                    {
+                      <a href="@Site.Href(row.TemplateId, item.EnTitle, row.EnTitle)"
+                         class="nav-dropdown-link">@row.Title</a>
+                    }
+                  </div>
+                }
+              }
+            </div>
+          }
+          <div
+            class="flex flex-col gap-3 pt-3 mt-1 w-full lg:w-auto lg:flex-row lg:items-center lg:gap-3 lg:border-t-0 lg:border-l lg:pt-0 lg:mt-0 lg:pl-8 lg:ml-2">
+            <a href="@variate[0].Value" target="_blank"
+               class="flex items-center justify-center gap-1 px-4 py-2 bg-red-50 text-red-600 rounded-full text-sm font-bold hover:bg-red-600 hover:text-white transition-all w-full lg:w-auto"><i
+                class="fas @variate[0].Field"></i> @variate[0].Title</a><a href="@variate[1].Value" target="_blank"
+                                                                   class="flex items-center justify-center gap-1 px-4 py-2 bg-orange-50 text-orange-600 rounded-full text-sm font-bold hover:bg-orange-500 hover:text-white transition-all w-full lg:w-auto"><i
+                class="fas @variate[1].Field"></i> @variate[1].Title</a>
+          </div>
+        </div>
+        <button id="mobile-menu-toggle" class="lg:hidden text-gray-600 p-2"><i
+            class="fas fa-bars text-2xl"></i></button>
+      </div>
+    </div>
+  </nav>
+  @RenderBody()
+  @await Html.PartialAsync("_Footer")
+</div>
+
+<script src="/js/jquery/jquery.min.js"></script>
+<script src="/js/main.js"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

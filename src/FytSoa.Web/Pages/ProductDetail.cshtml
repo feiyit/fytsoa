@@ -1,0 +1,210 @@
+@page "/product/detail/{id}"
+@using FytSoa.Application.Cms
+@inject CmsProductService _productService;
+@{
+  var paramId = RouteData.Values["id"].ToString();
+  var product = await _productService.GetByIdAsync(long.Parse(paramId));
+  var column = Site.Columns;
+  var nowColumn = column.Find(m => m.Id == product.ColumnId);
+  var parentColumn = column.Find(m => m.Id == nowColumn.ParentId);
+
+  ViewData["Title"] = product.Title;
+  ViewData["Key"] = product.SubTitle;
+  ViewData["Desc"] = product.Intro;
+
+  var xgProduct = await _productService.PagesAsync(new CmsProductParam()
+  {
+    Id = nowColumn.Id,
+    Status = "1",
+    Limit = 4
+  });
+}
+<main class="pt-24 pb-24 bg-gray-50">
+  <section>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- 产品中心宣传图 -->
+      <div class="product-center-banner mb-6 hidden">
+        <img
+          src="@product.ImgUrl.UrlReplace()"
+          alt="@product.Title">
+      </div>
+
+      <p class="text-xs text-gray-400 mb-4">
+        <a href="/" class="hover:text-red-600">首页</a>
+        <span class="mx-1">/</span>
+        <a href="/product" class="hover:text-red-600">产品中心</a>
+        <span class="mx-1">/</span>
+        <span class="text-gray-500">@product.Title</span>
+      </p>
+
+      <div class="bg-white rounded-3xl border border-gray-100 p-6 md:p-10 shadow-sm">
+        <div class="product-main-layout">
+          <!-- 左侧：产品图片画廊（大图 + 缩略图） -->
+          <div class="product-main-left relative">
+            <div class="absolute -top-8 -left-8 w-32 h-32 bg-red-50 rounded-full -z-10"></div>
+            <div class="product-gallery-main">
+              <img id="product-main-image"
+                   src="@product.ImgUrl.UrlReplace()"
+                   alt="@product.Title">
+              <button type="button" class="product-gallery-zoom-btn" style="display: none" aria-label="放大查看产品大图">
+                <i class="fas fa-search-plus"></i>
+              </button>
+            </div>
+            <div class="product-gallery-thumbs">
+              <button type="button" class="product-gallery-thumb is-active"
+                      data-large="@product.ImgUrl.UrlReplace()">
+                <img
+                  src="@product.ImgUrl.UrlReplace()"
+                  alt="@product.Title">
+              </button>
+              @foreach (var item in product.Album)
+              {
+                <button type="button" class="product-gallery-thumb"
+                        data-large="@item.UrlReplace()">
+                  <img
+                    src="@item.UrlReplace()"
+                    alt="@product.Title">
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- 右侧：关键信息与卖点 + 关键参数 -->
+          <div class="product-main-right">
+            <h1 class="text-3xl md:text-4xl font-black text-gray-900 mb-3">@product.Title</h1>
+            <p class="text-sm uppercase tracking-widest text-red-600 font-bold mb-4">VOICE CONTROL NURSING BED</p>
+
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+                    <span
+                      class="inline-flex items-center px-3 py-1 rounded-full bg-red-50 text-red-600 text-[11px] font-bold">
+                      @nowColumn.Title
+                    </span>
+              <span
+                class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-[11px] font-bold">
+                      @product.ProductNo
+                    </span>
+              <span
+                class="inline-flex items-center px-3 py-1 rounded-full bg-gray-900 text-white text-[11px] font-bold">
+                      参考价格：¥@product.Price 起
+                    </span>
+            </div>
+
+            <p class="text-gray-600 text-sm leading-relaxed mb-6">
+              @product.Intro
+            </p>
+
+            <!-- 关键参数预览（与图片左右布局） -->
+            <h2 class="text-sm font-bold text-gray-900 mb-2">关键参数</h2>
+            <div class="mb-6 text-xs text-gray-600 product-key-specs">
+              @foreach (var item in product.Extend)
+              {
+                <div class="product-key-spec flex justify-between border-b border-gray-100 py-1">
+                  <span>@item.Key</span>
+                  <span>@item.Value</span>
+                </div>
+              }
+            </div>
+
+            <h2 class="text-sm font-bold text-gray-900 mb-3 hidden">核心功能亮点</h2>
+            <div class="product-feature-list mb-8 hidden" style="display: none">
+              <div
+                class="product-feature-item p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center text-red-600">
+                  <i class="fas fa-microphone"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-bold text-gray-900 mb-1">语音控制</h3>
+                  <p class="text-xs text-gray-500">支持“起背”“平躺”等口令，长者可自行完成简单体位调整。</p>
+                </div>
+              </div>
+              <div
+                class="product-feature-item p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center text-red-600">
+                  <i class="fas fa-bed"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-bold text-gray-900 mb-1">多段角度调节</h3>
+                  <p class="text-xs text-gray-500">头背、腿部、床体多段独立调节，满足进食、休息、护理等不同姿势。</p>
+                </div>
+              </div>
+              <div
+                class="product-feature-item p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center text-red-600">
+                  <i class="fas fa-heartbeat"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-bold text-gray-900 mb-1">压力监测与预警</h3>
+                  <p class="text-xs text-gray-500">结合压力传感与算法建议翻身频率，降低压疮发生风险。</p>
+                </div>
+              </div>
+              <div
+                class="product-feature-item p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center text-red-600">
+                  <i class="fas fa-shield-alt"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-bold text-gray-900 mb-1">多重安全防护</h3>
+                  <p class="text-xs text-gray-500">侧护栏防坠、断电自锁、异常姿态报警等设计，全方位守护使用安全。</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3 mb-6 hidden">
+                    <span
+                      class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-50 text-red-600 text-xs font-bold">
+                      <i class="fas fa-user-friends text-[11px]"></i> 适用对象：长期卧床 / 失能长者
+                    </span>
+              <span
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-xs font-bold">
+                      <i class="fas fa-hospital text-[11px]"></i> 适用场景：居家 / 护理院 / 医养结合机构
+                    </span>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4">
+              <a href="tel:@Site.CurrentSite.CompanyTel"
+                 class="px-8 py-3 rounded-full bg-red-600 hover:bg-red-700 text-white text-sm font-bold flex items-center justify-center gap-2 transition-colors">
+                <i class="fas fa-phone"></i> 电话咨询方案
+              </a>
+              <a href="/product"
+                 class="px-8 py-3 rounded-full border border-gray-900 text-gray-900 text-sm font-bold flex items-center justify-center gap-2 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="fas fa-arrow-left"></i> 返回产品列表
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="mt-12">
+        <div class="product-bottom-layout">
+          <div class="product-spec-card bg-white rounded-3xl border border-gray-100 p-6 md:p-8">
+            <h2 class="text-lg font-bold text-gray-900 mb-4">产品详情</h2>
+            <div class="product-spec-list text-sm text-gray-600">
+              @Html.Raw(product.Content)
+            </div>
+          </div>
+
+          <!-- 相关产品推荐 -->
+          <aside class="product-aside-card bg-white rounded-3xl border border-gray-100 p-6 md:p-8">
+            <h2 class="text-lg font-bold text-gray-900 mb-4">相关产品推荐</h2>
+            <ul class="related-products-list mb-4">
+              @foreach (var item in xgProduct.Items.Where(m=>m.Id!=product.Id))
+              {
+                <li class="related-product-item">
+                  <a href="/product/detail/@item.Id" class="related-product-thumb block">
+                    <img
+                      src="@item.ImgUrl.UrlReplace()"
+                      alt="@item.Title">
+                  </a>
+                  <div>
+                    <a href="/product/detail/@item.Id" class="related-product-title">@item.Title</a>
+                    <p class="related-product-desc">@item.Intro</p>
+                  </div>
+                </li>
+              }
+            </ul>
+          </aside>
+        </div>
+      </section>
+    </div>
+  </section>
+</main>

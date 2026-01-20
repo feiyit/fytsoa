@@ -1,0 +1,125 @@
+@import "./fyt.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    --el-menu-base-level-padding: 12px;
+    --el-menu-bg-color: #f1f5f9;
+  }
+  :root.dark {
+    --el-menu-bg-color: transparent;
+  }
+  body {
+    @apply m-0 min-h-screen bg-slate-50 text-slate-900;
+  }
+
+  #app {
+    @apply min-h-screen;
+  }
+}
+
+@layer components {
+  .app-root {
+    @apply min-h-screen w-full bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100;
+  }
+
+  .app-loading {
+    @apply fixed inset-0 flex w-full flex-col items-center justify-center z-[9999];
+  }
+
+  .app-loading__wrap {
+    @apply w-full flex flex-col items-center px-6 sm:px-10;
+  }
+
+  .app-loading__title {
+    @apply mb-6 text-center text-2xl sm:text-3xl font-semibold tracking-[0.05em] text-slate-800 dark:text-slate-100;
+  }
+
+  .app-loading__orbital {
+    @apply relative w-32 h-32 sm:w-40 sm:h-40 flex items-center justify-center mb-4;
+  }
+
+  .app-loading__text {
+    @apply text-xs sm:text-sm tracking-[0.3em] uppercase text-slate-500 dark:text-slate-400;
+  }
+
+  .app-loading__ring {
+    @apply absolute rounded-full border border-slate-300 dark:border-slate-600;
+    transform-origin: center;
+  }
+
+  .app-loading__ring--outer {
+    @apply w-32 h-32 sm:w-40 sm:h-40;
+    animation: app-orbit 3s linear infinite;
+  }
+
+  .app-loading__ring--middle {
+    @apply w-24 h-24 sm:w-28 sm:h-28;
+    animation: app-orbit 2.1s linear infinite reverse;
+  }
+
+  .app-loading__ring--inner {
+    @apply w-16 h-16 sm:w-20 sm:h-20;
+    animation: app-orbit 1.5s linear infinite;
+  }
+
+  .app-loading__dot {
+    @apply w-3 h-3 rounded-full bg-primary-500 shadow-[0_0_8px_rgba(56,189,248,0.9),0_0_22px_rgba(56,189,248,0.9)];
+    animation: app-pulse 1.2s ease-in-out infinite;
+  }
+
+  .app-loading__outer-orbit {
+    @apply absolute w-32 h-32 sm:w-40 sm:h-40 origin-center;
+    animation: app-orbit 2.4s linear infinite;
+    z-index: 10;
+  }
+
+  .app-loading__outer-orbit-dot {
+    @apply absolute w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-primary-400 shadow-[0_0_10px_rgba(56,189,248,0.9),0_0_26px_rgba(56,189,248,0.9)];
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* loading 渐隐动画 */
+  .app-fade-enter-active,
+  .app-fade-leave-active {
+    transition: opacity 0.45s ease-out;
+  }
+
+  .app-fade-enter-from,
+  .app-fade-leave-to {
+    opacity: 0;
+  }
+
+  .app-fade-enter-to,
+  .app-fade-leave-from {
+    opacity: 1;
+  }
+}
+
+@keyframes app-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes app-pulse {
+  0%,
+  100% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}

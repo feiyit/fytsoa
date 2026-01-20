@@ -1,0 +1,66 @@
+/* Minimal local icon styles to replace Font Awesome CDN.
+ * Only defines the icons actually used in this page. */
+
+.fas,
+.fab {
+  display: inline-block;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.fas.fa-heartbeat::before {
+  content: "❤";
+}
+
+.fas.fa-chevron-down::before {
+  content: "▾";
+}
+
+.fas.fa-shopping-cart::before {
+  content: "🛒";
+}
+
+.fas.fa-store::before {
+  content: "🏬";
+}
+
+.fas.fa-arrow-right::before {
+  content: "➜";
+}
+
+.fas.fa-map-marker-alt::before {
+  content: "📍";
+}
+
+.fab.fa-weixin::before {
+  content: "微";
+}
+
+.fab.fa-weibo::before {
+  content: "博";
+}
+
+.fab.fa-tiktok::before {
+  content: "抖";
+}
+
+.fas.fa-phone::before {
+  content: "☎";
+}
+
+.fas.fa-envelope::before {
+  content: "✉";
+}
+
+.fas.fa-download::before {
+  content: "⬇";
+}
+
+.fas.fa-arrow-up::before {
+  content: "↑";
+}
+
+.fas.fa-bars::before {
+  content: "☰";
+}
+

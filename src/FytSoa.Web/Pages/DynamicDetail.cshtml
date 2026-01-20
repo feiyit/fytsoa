@@ -1,0 +1,140 @@
+@page "/news-detail/{id?}"
+@using FytSoa.Application.Cms
+@using FytSoa.Common.Param
+@inject CmsColumnService _columnService
+@inject CmsArticleService _articleService
+@{
+  var paramId = RouteData.Values["id"].ToString();
+  var article = await _articleService.GetByIdAsync(long.Parse(paramId));
+  var column = Site.Columns;
+  var nowColumn = column.Find(m => m.Id == article.ColumnId);
+  var parentColumn = column.Find(m => m.Id == nowColumn.ParentId);
+
+  ViewData["Title"] = article.Title;
+  ViewData["Key"] = article.Tag;
+  ViewData["Desc"] = article.Summary;
+}
+<main class="pt-24 lg:pt-28 pb-20 flex-1 bg-gray-50">
+  <section class="relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
+      <div class="flex flex-col lg:flex-row lg:items-start gap-8">
+        <aside class="mb-6 lg:mb-0 lg:mr-4 lg:w-64 lg:flex-shrink-0 lg:sticky lg:top-28">
+          <div
+            class="bg-white border border-gray-200 rounded-3xl p-5 md:p-6 shadow-sm flex flex-col gap-4 relative overflow-hidden">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <p class="text-[11px] uppercase tracking-[0.26em] text-gray-400 mb-1">NEWS CATEGORY</p>
+                <h2 class="text-sm md:text-base font-semibold text-gray-900">@parentColumn.Title</h2>
+              </div>
+              <div
+                class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-red-500 via-rose-400 to-amber-300 text-white flex items-center justify-center shadow-sm">
+                <i class="fas fa-layer-group text-sm"></i>
+              </div>
+            </div>
+
+            <!-- 简短说明 -->
+            <p class="text-[11px] text-gray-400 leading-relaxed">
+              通过类目快速浏览政策解读、产品动态与项目进展，帮您高效获取康养行业关键信息。
+            </p>
+
+            <!-- 类目链接 -->
+            <div class="flex flex-col gap-2 pt-1">
+              <a href="/dynamic/@parentColumn.EnTitle"
+                 class="w-full flex items-center justify-between px-4 py-2 rounded-2xl bg-gray-50 border border-gray-100 text-gray-700 text-xs font-medium hover:bg-gray-900 hover:border-gray-900 hover:text-white transition-colors">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
+                  <span>全部内容</span>
+                </div>
+                <i class="fas fa-chevron-right text-[10px] opacity-60"></i>
+              </a>
+
+              @foreach (var item in column.Where(m => m.ParentId == parentColumn.Id))
+              {
+                if (item.EnTitle == (string)nowColumn.EnTitle)
+                {
+                  <a href="@Site.Href(item.TemplateId, (string)parentColumn.EnTitle, item.EnTitle)"
+                     class="w-full flex items-center justify-between px-4 py-2 rounded-2xl bg-gray-900 text-white text-xs font-semibold shadow-sm">
+                    <div class="flex items-center gap-2">
+                      <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
+                      <span>@item.Title</span>
+                    </div>
+                    <i class="fas fa-check text-[11px] opacity-90"></i>
+                  </a>
+                }
+                else
+                {
+                  <a href="@Site.Href(item.TemplateId, (string)parentColumn.EnTitle, item.EnTitle)"
+                     class="w-full flex items-center justify-between px-4 py-2 rounded-2xl bg-gray-50 border border-gray-100 text-gray-700 text-xs font-medium hover:bg-gray-900 hover:border-gray-900 hover:text-white transition-colors">
+                    <div class="flex items-center gap-2">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                      <span>@item.Title</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-[10px] opacity-60"></i>
+                  </a>
+                }
+              }
+            </div>
+          </div>
+        </aside>
+
+        <div class="flex-1">
+          <div class="max-w-4xl mx-auto lg:mx-0">
+            <div class="mb-6 md:mb-8">
+              <p class="text-xs text-red-500 uppercase tracking-[0.3em] mb-3 flex items-center gap-2">
+                <a href="news.html" class="hover:text-red-600">NEWS</a>
+                <span class="w-5 h-px bg-gray-300"></span>
+                @nowColumn.Title
+              </p>
+              <h1 class="text-2xl md:text-3xl lg:text-4xl font-black text-gray-900 mb-4 leading-snug">
+                @article.Title
+              </h1>
+              <div class="flex flex-wrap items-center gap-4 text-[11px] text-gray-500">
+                      <span class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt text-[11px]"></i>
+                        @article.PublishTime.ToShortDateString()
+                      </span>
+                <span class="flex items-center gap-2" id="read-time">
+                        <i class="far fa-clock text-[11px]"></i>
+                        阅读约 6 分钟
+                      </span>
+                <span class="flex items-center gap-2">
+                        <i class="fas fa-user text-[11px]"></i>
+                  作者：@article.Source
+                      </span>
+              </div>
+            </div>
+            <article id="art-text" 
+              class="bg-white border border-gray-200 rounded-3xl px-5 sm:px-8 md:px-10 py-8 md:py-10 shadow-[0_24px_70px_-40px_rgba(15,23,42,0.5)]">
+              @Html.Raw(article.Content)
+            </article>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+@section Scripts
+{
+  <script src="/js/jquery/jquery.min.js"></script>
+  <script>
+    function getReadingTime() {
+      const artText = document.getElementById('art-text');
+      if (!artText) {
+        console.error('未找到id为art-text的元素');
+        return 0;
+      }
+      const pureText = artText.textContent.trim().replace(/\s+/g, '');
+      if (!pureText) {
+        return 0;
+      }
+      const wordsPerMinute = 60;
+      const wordCount = pureText.length;
+      const readingMinutes = Math.ceil((wordCount / wordsPerMinute) * 10) / 10;
+      return readingMinutes;
+    }
+
+    const readingTime = getReadingTime();
+    $('#read-time').html('<i class="far fa-clock text-[11px]"></i> 阅读 ' + readingTime + ' 分钟');
+  </script>
+}

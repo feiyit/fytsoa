@@ -1,0 +1,1 @@
+{"Sensitivity":"\u8349,\u64CD","IpBlacklist":"192.188.1.1\n192.168.1.2","UploadWhitelist":"jpg|gif|png|pdf|xls|xlsx|jpeg"}

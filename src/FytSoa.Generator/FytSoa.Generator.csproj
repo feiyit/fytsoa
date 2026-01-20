@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FytSoa.Common\FytSoa.Common.csproj" />
+      <ProjectReference Include="..\FytSoa.Sugar\FytSoa.Sugar.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="SqlSugarCore" Version="5.1.4.208" />
+    </ItemGroup>
+
+</Project>

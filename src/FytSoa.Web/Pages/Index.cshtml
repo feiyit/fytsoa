@@ -1,0 +1,204 @@
+﻿@page
+@using FytSoa.Application.Cms
+@using FytSoa.Application.Sys
+@using FytSoa.Application.Sys.Param
+@model IndexModel
+@inject CmsArticleService _articleService
+@inject SysAdvInfoService _advService;
+@inject CmsProductService _productService;
+@{
+  ViewData["Title"] = Site.CurrentSite.SeoTitle;
+  ViewData["Key"] = Site.CurrentSite.SeoKey;
+  ViewData["Desc"] = Site.CurrentSite.SeoDescribe;
+  var column = Site.Columns;
+  var caseColumn = column.Where(m => m.ParentId == 2006206019075706880).Select(m => m.Id).ToList();
+  var cases = await _articleService.PagesAsync(new CmsArticleParam { Limit = 3, ColumnList = caseColumn, Attr = 1 });
+  var articleColumn = column.Where(m => m.ParentId == 2006206742542815232).Select(m => m.Id).ToList();
+  var article = await _articleService.PagesAsync(new CmsArticleParam() { Limit = 3, ColumnList = articleColumn, Attr = 1 });
+  var adv = await _advService.GetPagesAsync(new CodePageParam() { Status = "1" });
+  var bannerIndex = 0;
+  var productList = await _productService.PagesAsync(new CmsProductParam()
+  {
+  Status = "1",Limit = 7
+  });
+  var firstProduct = productList.Items.FirstOrDefault();
+  var iconArr = new List<string>() { "fa-robot","fa-shield-alt"};
+  var iconIndex = 0;
+}
+<section class="relative hero-section flex items-center overflow-hidden mt-20">
+  <div class="absolute inset-0">
+    <div id="hero-carousel" class="hero-carousel">
+      @foreach (var item in adv.Items)
+      {
+        bannerIndex ++ ;
+        <div class="hero-carousel-slide@(bannerIndex==1?" is-active":"")" 
+             data-badge="@item.Codes"
+             data-title="@Html.Raw(item.Title)"
+             data-desc="@item.Summary">
+          <img
+            src="@item.ImgUrl.UrlReplace()"
+            alt="@item.Title" class="w-full h-full object-cover">
+        </div>
+      }
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent"></div>
+  </div>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+    <div class="max-w-2xl text-white">
+              <span id="hero-badge"
+                    class="inline-block px-4 py-1 bg-red-600 rounded-full text-xs font-bold tracking-widest uppercase mb-6 shadow-lg animate-pulse">专注适老化改造与智能辅具</span>
+      <h1 id="hero-title" class="text-5xl md:text-7xl font-black mb-8 leading-tight">利鑫康养<br><span
+          class="text-red-500">守护</span>长者尊严</h1>
+      <p id="hero-desc" class="text-xl md:text-2xl text-gray-200 mb-12 font-light leading-relaxed">
+        为您提供专业的一站式居家养老产品与环境优化方案，让关爱更有温度，让晚年生活更安全、更体面。</p>
+      <div class="flex flex-col sm:flex-row gap-6"><a href="/product"
+                                                      class="px-10 py-4 bg-red-600 hover:bg-red-700 text-white text-lg font-bold rounded-full transition-all hover:scale-105 shadow-xl text-center">浏览产品中心</a><a
+          href="/column/about/us"
+          class="px-10 py-4 bg-white/10 backdrop-blur hover:bg-white/20 text-white text-lg font-bold rounded-full border border-white/50 transition-all text-center">了解我们</a>
+      </div>
+    </div>
+  </div>
+  <div class="hero-carousel-indicators-wrapper">
+    <div class="hero-carousel-indicators"></div>
+  </div>
+</section>
+<section class="py-24 bg-white overflow-hidden">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col lg:flex-row items-center gap-20">
+      <div class="lg:w-1/2 relative group">
+        <div class="absolute -top-10 -left-10 w-64 h-64 bg-red-50 rounded-full -z-10 animate-pulse"></div>
+        <a href="/product/detail/@firstProduct.Id" title="@firstProduct.Title" class="block"><img
+                     src="@firstProduct.ImgUrl.UrlReplace()"
+                     alt="@firstProduct.Title"
+                     class="rounded-[2.5rem] shadow-2xl w-full h-[550px] object-cover hover:scale-[1.02] transition-transform duration-700" /></a>
+        <div
+          class="absolute -bottom-8 -right-8 bg-white p-8 rounded-3xl shadow-2xl border border-gray-50 hidden md:block">
+          <div class="text-red-600 font-black text-4xl mb-1">￥@firstProduct.Price</div>
+          <div class="text-gray-400 text-sm font-bold uppercase tracking-widest">Flagship Choice</div>
+        </div>
+      </div>
+      <div class="lg:w-1/2">
+        <h2 class="text-red-600 font-bold uppercase tracking-widest mb-4">旗舰爆款 · 明星单品</h2>
+        <a href="/product/detail/@firstProduct.Id" title="@firstProduct.Title" class="text-5xl font-black text-gray-900 mb-8 block">@firstProduct.Title</a>
+        <p class="text-xl text-gray-500 mb-10 leading-relaxed font-light">@firstProduct.Intro</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
+          @foreach (var item in firstProduct.Extend)
+          {
+            <div class="flex items-start gap-3 p-5 bg-gray-50 rounded-2xl"><i
+                                                                             class="fas @iconArr[iconIndex] text-red-600 text-2xl mt-1"></i>
+              <div>
+                <h5 class="font-bold text-gray-900 text-lg">@item.Key</h5>
+                <p class="text-sm text-gray-500">@item.Value</p>
+              </div>
+            </div>
+            iconIndex++;
+          }
+        </div>
+        <a href="tel:@Site.CurrentSite.CompanyTel"
+          class="w-full sm:w-auto px-12 py-5 bg-gray-900 text-white rounded-full font-bold text-lg hover:bg-red-600 transition-all shadow-xl hover:translate-y-[-2px]">
+          立即咨询详情
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="products" class="py-24 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-red-600 font-bold uppercase tracking-widest mb-2">Our Products</h2>
+      <h3 class="text-4xl font-black text-gray-900">核心产品矩阵</h3>
+      <div class="w-20 h-1 bg-red-600 mx-auto mt-6 rounded-full"></div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      @foreach (var item in productList.Items.Where(m=>m.Id!=firstProduct.Id))
+      {
+        <div
+          class="group bg-white rounded-3xl overflow-hidden hover-lift border border-gray-100 flex flex-col h-full">
+          <a href="/product/detail/@item.Id" title="@item.Title" class="aspect-[4/3] overflow-hidden block">
+            <img
+              src="@item.ImgUrl.UrlReplace()"
+              alt="@item.Title"
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></a>
+          <div class="p-8 flex flex-col flex-grow">
+            <span
+              class="text-xs font-bold text-red-600 uppercase tracking-widest mb-3 inline-block px-3 py-1 bg-red-50 rounded-full w-fit">@item.ColumnName</span>
+            <a href="/product/detail/@item.Id" title="@item.Title" class="text-xl font-bold text-gray-900 mb-3 block">@item.Title</a>
+            <p class="text-gray-500 text-sm leading-relaxed mb-8 flex-grow">@item.Intro</p>
+            <div class="flex items-center justify-between pt-6 border-t border-gray-50">
+              <span
+                class="text-gray-400 text-sm font-bold">了解核心参数</span>
+              <a href="/product/detail/@item.Id" title="@item.Title"
+                class="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center hover:rotate-45 transition-transform block">
+                <i class="fas fa-arrow-right text-xs"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+<section id="cases" class="py-24 bg-gray-900 text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-red-500 font-bold tracking-widest mb-2 uppercase">Proven Success</h2>
+      <h3 class="text-4xl font-black">每一个幸福长者，都是利鑫的动力</h3>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      @foreach (var item in cases.Items)
+      {
+        <a href="/news-detail/@item.Id" class="relative rounded-3xl overflow-hidden group h-[480px] block">
+          <img
+            src="@item.ImgUrl.UrlReplace()"
+            alt="@item.Title"
+            class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 p-10">
+            <span
+              class="text-xs font-bold uppercase tracking-widest bg-red-600 px-3 py-1 rounded mb-4 inline-block">@item.ColumnName</span>
+            <h4 class="text-2xl font-bold mb-4">@item.Title</h4>
+            <p class="text-gray-400 text-sm flex items-center gap-2"><i class="fas fa-map-marker-alt"></i> @if (item.Extend.Any())
+                                                                                                           {
+                                                                                                             @item.Extend[0].Value
+                                                                                                           }
+            </p>
+          </div>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+<section id="news" class="py-24 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
+      <div>
+        <h2 class="text-red-600 font-bold uppercase tracking-widest mb-2">News &amp; Insights</h2>
+        <h3 class="text-4xl font-black text-gray-900">行业洞察与品牌动态</h3>
+      </div>
+      <a href="/dynamic/news"
+        class="px-10 py-3 border-2 border-gray-900 rounded-full font-bold hover:bg-gray-900 hover:text-white transition-all">
+        前往资讯中心
+      </a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      @foreach (var item in article.Items)
+      {
+        <a href="/news-detail/@item.Id" class="block group cursor-pointer">
+          <div
+            class="aspect-[16/9] rounded-2xl overflow-hidden mb-6 shadow-sm group-hover:shadow-lg transition-shadow">
+            <img
+              src="@item.ImgUrl.UrlReplace()"
+              alt="@item.Title"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <p class="text-red-600 font-bold text-sm mb-2">@item.PublishTime.ToShortDateString()</p>
+          <h4
+            class="text-xl font-bold text-gray-900 mb-4 group-hover:text-red-600 transition-colors line-clamp-2 leading-tight">
+            @item.Title</h4>
+          <p class="text-gray-500 text-sm line-clamp-2 leading-relaxed">
+            @item.Summary</p>
+        </a>
+      }
+    </div>
+  </div>
+</section>

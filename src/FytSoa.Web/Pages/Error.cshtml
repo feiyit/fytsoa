@@ -1,0 +1,35 @@
+﻿@page
+@model ErrorModel
+@{
+     //Layout = null;
+    ViewData["Title"] = "页面出错";
+}
+<!-- Error Content -->
+<main class="min-vh-100 d-flex align-items-center justify-content-center">
+    <section class="py-5 w-100">
+        <div class="container text-center">
+            <div class="mb-4">
+                <span class="badge bg-light text-dark px-3 py-2">
+                    <i class="fas fa-circle-exclamation me-2 text-warning"></i>
+                    页面出错 / Page Error
+                </span>
+            </div>
+            <h1 class="display-4 fw-bold mb-3">抱歉，页面出错了</h1>
+            <p class="lead text-muted mb-4">
+                您访问的页面不存在，或者服务器暂时出现了问题。<br>
+                请检查输入的网址是否正确，或稍后再试。
+            </p>
+            <div class="d-flex justify-content-center flex-wrap gap-3 mb-4">
+                <a href="/" class="btn btn-primary px-4">
+                    <i class="fas fa-home me-2"></i>返回首页
+                </a>
+                <a href="/contactus" class="btn btn-outline-secondary px-4">
+                    <i class="fas fa-headset me-2"></i>联系技术支持
+                </a>
+            </div>
+            <p class="small text-muted">
+                如果问题持续存在，请将出现错误的时间、访问路径等信息反馈给我们，以便尽快排查。
+            </p>
+        </div>
+    </section>
+</main>

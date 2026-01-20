@@ -1,0 +1,41 @@
+@page
+@{
+    ViewData["Title"] = "网站服务升级";
+}
+<!-- Site Closed Content -->
+<main class="min-vh-100 d-flex align-items-center justify-content-center">
+    <section class="py-5 w-100">
+        <div class="container text-center">
+            <div class="mb-4">
+                <span class="badge bg-primary-subtle text-primary px-3 py-2">
+                    <i class="fas fa-tools me-2"></i>
+                    网站维护中 / Maintenance
+                </span>
+            </div>
+            <h1 class="display-5 fw-bold mb-3">网站正在升级维护中</h1>
+            <p class="lead text-muted mb-4">
+                为了给您提供更稳定、更优质的访问体验，我们正在对系统进行升级维护。<br>
+                维护期间，本网站的部分或全部页面可能暂时无法访问，给您带来的不便，敬请谅解。
+            </p>
+            <div class="mb-4">
+                <div class="progress" style="height: 0.75rem; max-width: 420px; margin: 0 auto;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 65%;"></div>
+                </div>
+                <p class="small text-muted mt-2">系统升级进度示意，仅供参考</p>
+            </div>
+            <p class="text-muted mb-4">
+                如需紧急联系或有重要业务需求，您可以通过
+                <a href="/contact">联系我们页面</a>
+                提交需求，我们会尽快与您取得联系。
+            </p>
+            <div class="d-flex justify-content-center flex-wrap gap-3">
+                <a href="/" class="btn btn-outline-primary px-4">
+                    <i class="fas fa-home me-2"></i>返回首页
+                </a>
+                <a href="/contactus" class="btn btn-primary px-4">
+                    <i class="fas fa-headset me-2"></i>联系支持团队
+                </a>
+            </div>
+        </div>
+    </section>
+</main>

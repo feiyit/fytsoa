@@ -1,0 +1,172 @@
+@page "/case/{entitle}/{subtitle?}"
+@using FytSoa.Application.Cms
+@using FytSoa.Common.Result
+@inject CmsArticleService _articleService
+@{
+  var page = Request.Query["page"];
+  page = string.IsNullOrEmpty(page) ? "1" : page.ToString();
+  var column = Site.Columns;
+  var entitle = RouteData.Values["entitle"];
+  var subtitle = RouteData.Values["subtitle"];
+  var list = new PageResult<CmsArticleDto>();
+  var nowColumn = column.Find(m => m.EnTitle == (string)subtitle!);
+  var parentColumn = column.Find(m => m.EnTitle == (string)entitle!);
+  if (subtitle==null)
+  {
+    var columnIdArr = column.Where(m => m.ParentId == parentColumn.Id).Select(m => m.Id)
+      .ToList();
+    list = _articleService.PagesAsync(new CmsArticleParam() { Limit = 8, Page = int.Parse(page), ColumnList = columnIdArr}).Result;
+  }
+  else
+  {
+    list = _articleService.PagesAsync(new CmsArticleParam() { Limit = 8, Page = int.Parse(page), Id = nowColumn.Id }).Result;
+  }
+  Console.WriteLine($"list:{list.Items.Count}");
+  ViewData["Title"] = nowColumn?.Title + "_" + Site.CurrentSite.SeoTitle;
+  ViewData["Key"] = nowColumn?.KeyWord;
+  ViewData["Desc"] = nowColumn?.Summary;
+}
+<!-- 新闻列表主体 -->
+<main class="pt-24 lg:pt-28 pb-20 flex-1 bg-gray-50">
+  <!-- 顶部标题 -->
+  <section class="relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
+      <p class="text-xs text-red-500 uppercase tracking-[0.3em] mb-3">@parentColumn.EnTitle.ToLower()</p>
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+        <div class="max-w-2xl">
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 mb-3">
+            @parentColumn.Title
+          </h1>
+          <p class="text-sm md:text-base text-gray-500 leading-relaxed">
+            @parentColumn.Summary
+          </p>
+        </div>
+        <div
+          class="flex items-center gap-3 text-[11px] text-gray-500 bg-white border border-gray-100 rounded-2xl px-4 py-3 shadow-sm">
+          <i class="fas fa-lightbulb text-amber-400"></i>
+          <span class="tracking-wide">@parentColumn.SubTitle</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 列表区域：统一卡片网格布局，兼容 PC 和移动端 -->
+  <section>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col lg:flex-row lg:items-start gap-8">
+        <!-- 左侧：二级类目（现代化卡片布局） -->
+        <aside class="mb-6 lg:mb-0 lg:mr-4 lg:w-64 lg:flex-shrink-0 lg:sticky lg:top-28">
+          <div
+            class="bg-white border border-gray-200 rounded-3xl p-5 md:p-6 shadow-sm flex flex-col gap-4 relative overflow-hidden">
+            <!-- 顶部标题区 -->
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <p class="text-[11px] uppercase tracking-[0.26em] text-gray-400 mb-1">@parentColumn.EnTitle.ToLower()</p>
+                <h2 class="text-sm md:text-base font-semibold text-gray-900">类目</h2>
+              </div>
+              <div
+                class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-red-500 via-rose-400 to-amber-300 text-white flex items-center justify-center shadow-sm">
+                <i class="fas fa-layer-group text-sm"></i>
+              </div>
+            </div>
+
+            <!-- 简短说明 -->
+            <p class="text-[11px] text-gray-400 leading-relaxed">
+              通过类目快速浏览政策解读、产品动态与项目进展，帮您高效获取康养行业关键信息。
+            </p>
+
+            <div class="flex flex-col gap-2 pt-1">
+              <a href="/dynamic/@parentColumn.EnTitle"
+                 class="@(subtitle==null?"w-full flex items-center justify-between px-4 py-2 rounded-2xl bg-gray-900 text-white text-xs font-semibold shadow-sm":"w-full flex items-center justify-between px-4 py-2 rounded-2xl bg-gray-50 border border-gray-100 text-gray-700 text-xs font-medium hover:bg-gray-900 hover:border-gray-900 hover:text-white transition-colors")">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
+                  <span>全部内容</span>
+                </div>
+                <i class="fas text-[10px] @(subtitle==null?"fa-check opacity-90":"fa-chevron-right opacity-60")"></i>
+              </a>
+
+              @foreach (var item in column.Where(m => m.ParentId == parentColumn.Id))
+              {
+                if (subtitle != null && item.EnTitle == (string)subtitle!)
+                {
+                  <a href="@Site.Href(item.TemplateId, (string)entitle!, item.EnTitle)"
+                     class="w-full flex items-center justify-between px-4 py-2 rounded-2xl bg-gray-900 text-white text-xs font-semibold shadow-sm">
+                    <div class="flex items-center gap-2">
+                      <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
+                      <span>@item.Title</span>
+                    </div>
+                    <i class="fas fa-check text-[11px] opacity-90"></i>
+                  </a>
+                }
+                else
+                {
+                  <a href="@Site.Href(item.TemplateId, (string)entitle!, item.EnTitle)"
+                     class="w-full flex items-center justify-between px-4 py-2 rounded-2xl bg-gray-50 border border-gray-100 text-gray-700 text-xs font-medium hover:bg-gray-900 hover:border-gray-900 hover:text-white transition-colors">
+                    <div class="flex items-center gap-2">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                      <span>@item.Title</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-[10px] opacity-60"></i>
+                  </a>
+                }
+              }
+            </div>
+          </div>
+        </aside>
+
+        <div class="flex-1">
+          <div class="news-list flex flex-wrap gap-6">
+            @{
+              Console.WriteLine($"数组中的长度："+list.Items.Count);
+            }
+            @foreach (var item in list.Items)
+            {
+              <article
+                class="news-card group bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition-shadow flex flex-col">
+                <a href="/news-detail/@item.Id" title="@item.Title" class="block">
+                  <div class="aspect-[16/9] overflow-hidden">
+                    <img
+                      src="@item.ImgUrl.UrlReplace()"
+                      alt="@item.Title"
+                      class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                  </div>
+                </a>
+                <div class="p-5 md:p-6 flex flex-col flex-1">
+                  <div class="flex items-center justify-between gap-3 mb-2">
+                    <span
+                      class="inline-flex items-center px-3 py-1 rounded-full bg-red-50 text-red-600 text-[11px] font-semibold tracking-wide">
+                      @item.ColumnName
+                    </span>
+                    <span class="text-[11px] text-gray-400">2024-03-20</span>
+                  </div>
+                  <h2 class="text-sm md:text-base font-bold text-gray-900 mb-2">
+                    <a href="/news-detail/@item.Id" title="@item.Title" class="hover:text-red-600 transition-colors">
+                      @item.Title
+                    </a>
+                  </h2>
+                  <p class="text-xs md:text-sm text-gray-500 leading-relaxed mb-4 flex-1">
+                    @item.Summary
+                  </p>
+                  <div class="flex items-center justify-end mt-auto pt-3 border-t border-gray-100">
+                    <a href="/news-detail/@item.Id" title="@item.Title"
+                       class="w-9 h-9 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-colors">
+                      <i class="fas fa-arrow-right text-[11px]"></i>
+                    </a>
+                  </div>
+                </div>
+              </article>
+            }
+          </div>
+
+          <div class="mt-8">
+            <nav aria-label="新闻分页" class="mt-5">
+              <ul class="pagination flex justify-content-center product-pagination">
+                @Html.Raw(PageHelper.Htmls(Convert.ToInt32(page), 12, Convert.ToInt32(list.TotalItems), "/news/" + parentColumn.EnTitle + "/" + nowColumn?.EnTitle))
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

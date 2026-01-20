@@ -1,0 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+using SqlSugar;
+
+namespace FytSoa.Domain.{NameSpace};
+
+/// <summary>
+/// {TableNameDescribe}
+/// </summary>
+[SugarTable("{DataTable}")]
+public class {TableName}:Entity
+{
+{AttributeList}
+}

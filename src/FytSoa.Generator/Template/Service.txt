@@ -1,0 +1,73 @@
+using FytSoa.Domain.{NameSpace};
+using FytSoa.Sugar;
+using FytSoa.Common.Utils;
+using FytSoa.Common.Param;
+using FytSoa.Common.Result;
+using Mapster;
+using Microsoft.AspNetCore.Mvc;
+using SqlSugar;
+
+namespace FytSoa.Application.{NameSpace};
+
+/// <summary>
+/// {TableNameDescribe}服务接口
+/// </summary>
+[ApiExplorerSettings(GroupName = "{Version}")]
+public class {TableName}Service : IApplicationService 
+{
+    private readonly SugarRepository<{TableName}> _thisRepository;
+    public {TableName}Service(SugarRepository<{TableName}> thisRepository)
+    {
+        _thisRepository = thisRepository;
+    }
+    
+    /// <summary>
+    /// 查询所有——分页
+    /// </summary>
+    /// <param name="param"></param>
+    /// <returns></returns>
+    public async Task<PageResult<{TableName}Dto>> GetPagesAsync(PageParam param)
+    {
+        var query = await _thisRepository.AsQueryable()
+            .OrderByDescending(m=>m.Id)
+            .ToPageAsync(param.Page, param.Limit);
+        return query.Adapt<PageResult<{TableName}Dto>>();
+    }
+
+    /// <summary>
+    /// 根据主键查询
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet("{id}")]
+    public async Task<{TableName}Dto> GetAsync(long id)
+    {
+        var model = await _thisRepository.GetByIdAsync(id);
+        return model.Adapt<{TableName}Dto>();
+    }
+
+    /// <summary>
+    /// 添加
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    public async Task<bool> AddAsync({TableName}Dto model) =>
+        await _thisRepository.InsertAsync(model.Adapt<{TableName}>());
+
+    /// <summary>
+    /// 修改
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    public async Task<bool> ModifyAsync({TableName}Dto model) =>
+        await _thisRepository.UpdateAsync(model.Adapt<{TableName}>());
+
+    /// <summary>
+    /// 删除,支持批量
+    /// </summary>
+    /// <param name="ids"></param>
+    /// <returns></returns>
+    [HttpDelete]
+    public async Task<bool> DeleteAsync([FromBody]List<long> ids) =>
+        await _thisRepository.DeleteAsync(m=>ids.Contains(m.Id));
+}

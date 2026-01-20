@@ -1,0 +1,52 @@
+:root.dark {
+  --card: 220deg 10% 12%;
+  --border: 220 11% 87%;
+  --s-bg-color: #1c1e22;
+  --s-bg-color-component: #1c1e22;
+  --overlay: 0deg 0% 0% / 40%;
+  --el-bg-color: #1c1e22;
+  --el-card-bg-color:#1c1e22:
+  
+}
+html.dark {
+--el-bg-color-overlay:#1c1e22;  
+--el-border-color-light: #36363a;
+}
+html.dark .el-card {
+    --el-card-bg-color:#1c1e22 !important:
+}
+:root.dark body {
+  background: radial-gradient(
+    circle at 0% 0%,
+    #0f172a 0,
+    #020617 45%,
+    #000 100%
+  );
+  color: #e5e7eb;
+}
+
+:root.dark .app-loading {
+  background: radial-gradient(
+      circle at 10% 0%,
+      rgba(56, 189, 248, 0.1),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 90% 100%,
+      rgba(129, 140, 248, 0.14),
+      transparent 55%
+    ),
+    #020617;
+}
+
+:root.dark .el-menu--vertical .el-menu-item.is-active:after,
+:root.dark
+  .el-menu--vertical
+  .el-sub-menu.is-active
+  > .el-sub-menu__title:after {
+  background-color: #1e293b;
+}
+:root.dark .el-menu-item:hover:after,
+:root.dark .el-sub-menu__title:hover:after {
+  background-color: #1e293b;
+}
