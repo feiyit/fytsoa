@@ -19,26 +19,20 @@ public class SysTenantService : IApplicationService
     private readonly SugarRepository<SysTenant> _thisRepository;
     private readonly SysAdminService _adminService;
     private readonly SysRoleService _roleService;
-    private readonly SysOrganizeService _orgService;
     private readonly SugarRepository<SysRole> _roleRepository;
-    private readonly SugarRepository<SysOrganize> _orgRepository;
     private readonly SugarRepository<SysAdmin> _adminRepository;
     private readonly SugarRepository<SysAdminRole> _adminRoleRepository;
     public SysTenantService(SugarRepository<SysTenant> thisRepository
     ,SysAdminService adminService
     ,SysRoleService roleService
-    ,SysOrganizeService orgService
     ,SugarRepository<SysRole> roleRepository
-    ,SugarRepository<SysOrganize> orgRepository
     ,SugarRepository<SysAdmin> adminRepository
     ,SugarRepository<SysAdminRole> adminRoleRepository)
     {
         _thisRepository = thisRepository;
         _adminService = adminService;
         _roleService = roleService;
-        _orgService = orgService;
         _roleRepository = roleRepository;
-        _orgRepository = orgRepository;
         _adminRepository = adminRepository;
         _adminRoleRepository = adminRoleRepository;
     }
@@ -99,13 +93,7 @@ public class SysTenantService : IApplicationService
     {
         model.TenantId = Unique.Id();
         await _thisRepository.InsertReturnSnowflakeIdAsync(model.Adapt<SysTenant>());
-        //增加机构
-        var orgId=await _orgService.AddAsync(new SysOrganizeDto()
-        {
-            TenantId =  model.TenantId,
-            Name = "默认机构",
-            Number = "10000"
-        });
+        
         //增加角色
         var roleId=await _roleService.AddAsync(new SysRoleDto()
         {
@@ -117,7 +105,7 @@ public class SysTenantService : IApplicationService
         var adminId=await _adminService.AddAsync(new SysAdminDto()
         {
             TenantId =  model.TenantId,
-            OrganizeId = orgId,
+            OrganizeId = 0,
             LoginAccount = model.Account,
             LoginPassWord = model.PassWord,
             Avatar = "/upload/avatar/6.jpg",

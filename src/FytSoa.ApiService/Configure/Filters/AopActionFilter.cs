@@ -207,7 +207,7 @@ public class AopActionFilter : IAsyncActionFilter
             if (!ApiSecurityValidate(timestamp, appkey, data, signature))
             {
                 Logger.Info("ApiSecurity——参数不合法-Sign");
-                context.Result = new JsonResult(JResult<int>.Error("参数不合法"));
+                context.Result = new JsonResult(JResult<int>.Error("参数不合法-Sign"));
                 return;
             }
             Console.WriteLine("success");

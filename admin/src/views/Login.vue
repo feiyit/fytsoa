@@ -45,9 +45,10 @@ const rememberAccount = ref(false);
 const ACCOUNT_KEY = STORAGE_KEYS.REMEMBER_ACCOUNT;
 
 onMounted(() => {
-  // 登录页默认使用暗色主题
-  if (appStore.theme !== "dark") {
-    appStore.setTheme("dark");
+  // 登录页默认使用暗色主题，但不要覆盖用户已保存的主题选择
+  const savedTheme = appStorage.get<"light" | "dark">(STORAGE_KEYS.THEME);
+  if (!savedTheme && appStore.theme !== "dark") {
+    appStore.setTheme("dark", false);
   }
 
   // 初始化时从本地读取上次记住的账号
@@ -109,7 +110,7 @@ watch(
       sliderPassed.value = false;
       sliderToken.value = null;
     }
-  }
+  },
 );
 
 // 监听滑块通过，与后台交互获取一次性 sliderToken
@@ -135,7 +136,7 @@ watch(
     } finally {
       sliderVerifying.value = false;
     }
-  }
+  },
 );
 
 const handleSubmit = async () => {
@@ -193,6 +194,7 @@ const canSubmit = computed(() => {
   <div
     class="login-page relative min-h-screen w-full text-slate-900 dark:text-slate-100"
   >
+    <div class="login-bg"></div>
     <!-- 顶部工具条浮动在页面之上，左右工具区域上下贯穿整个页面视觉 -->
     <header
       class="pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-8 sm:py-4"
@@ -346,7 +348,34 @@ const canSubmit = computed(() => {
 .dark .login-page {
   background: linear-gradient(to right, #1c1e22, #1a2534 50%, #1c1e22);
 }
+.login-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* 企业级渐变底色（深蓝+浅灰，低饱和度） */
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #f5f7fa 100%);
+  /* 叠加轻微的网格纹理，增加质感但不突兀 */
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  /* 动态光效动画 */
+  animation: bgLightMove 15s ease-in-out infinite alternate;
+}
 
+/* 光效动画：模拟柔和的光线流动 */
+@keyframes bgLightMove {
+  0% {
+    background-position: 0 0;
+    filter: brightness(0.95);
+  }
+  100% {
+    background-position: 40px 40px;
+    filter: brightness(1.05);
+  }
+}
 .dark .login-card {
   background: linear-gradient(
     145deg,

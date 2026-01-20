@@ -1,7 +1,8 @@
 import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router'
 import NProgress from 'nprogress'
 import Layout from '@/layout/Layout.vue'
-import LoginView from '@/views/Login.vue'
+import LoginView2 from '@/views/Login.vue'
+import LoginView from '@/views/login/index.vue'
 // import { dynamicRoutes } from './dynamic-routes'
 import { appStorage, STORAGE_KEYS } from '@/utils'
 import { getServerDynamicRoutes } from "@/utils/routeHandler";
@@ -9,6 +10,14 @@ import { getServerDynamicRoutes } from "@/utils/routeHandler";
 NProgress.configure({ showSpinner: false })
 
 const routes: RouteRecordRaw[] = [
+  {
+    path: '/login2',
+    name: 'Login2',
+    component: LoginView2,
+    meta: {
+      title: '登录2',
+    },
+  },
   {
     path: '/login',
     name: 'Login',
@@ -38,7 +47,7 @@ const routes: RouteRecordRaw[] = [
   },
 ]
 
-const WHITE_LIST: string[] = ['/login']
+const WHITE_LIST: string[] = ['/login','/login2']
 
 const router = createRouter({
   // history: createWebHistory(import.meta.env.BASE_URL),

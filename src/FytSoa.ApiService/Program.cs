@@ -17,7 +17,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: "FytSoaCors",
         policy  =>
         {
-            policy.WithOrigins("http://localhost:5174","http://localhost:5777")
+            policy.WithOrigins("http://localhost:2318","http://localhost:2319")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials()

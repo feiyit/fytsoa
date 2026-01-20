@@ -109,12 +109,23 @@ const buildSignData = (config: InternalAxiosRequestConfig): string => {
   const method = (config.method || "get").toUpperCase();
 
   if (method === "GET") {
-    const params = (config.params || {}) as Record<string, any>;
-    const keys = Object.keys(params).sort();
-    return keys
-      .filter((k) => k)
-      .map((k) => `${k}${params[k] ?? ""}`)
-      .join("");
+    const params = config.params;
+    if (!params) return "";
+
+    // Keep signature input consistent with Axios' default behavior:
+    // params with value `undefined` / `null` are omitted from the actual request URL.
+    if (typeof URLSearchParams !== "undefined" && params instanceof URLSearchParams) {
+      const entries = Array.from(params.entries())
+        .filter(([k, v]) => k && v !== undefined && v !== null)
+        .sort(([a], [b]) => a.localeCompare(b));
+      return entries.map(([k, v]) => `${k}${v}`).join("");
+    }
+
+    const obj = params as Record<string, any>;
+    const entries = Object.entries(obj)
+      .filter(([k, v]) => k && v !== undefined && v !== null)
+      .sort(([a], [b]) => a.localeCompare(b));
+    return entries.map(([k, v]) => `${k}${v}`).join("");
   }
 
   const data = config.data;
@@ -144,7 +155,6 @@ http.interceptors.request.use(
       const dataStr = buildSignData(config);
       const signStr = appkey + SECURITY_SIGN_KEY + timestamp + dataStr;
       const signature = CryptoJS.MD5(signStr).toString();
-
       const headers = config.headers || {};
       (headers as any).appkey = appkey;
       (headers as any).timestamp = timestamp;

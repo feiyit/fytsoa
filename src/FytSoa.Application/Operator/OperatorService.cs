@@ -20,9 +20,8 @@ namespace FytSoa.Application.Operator;
 public class OperatorService : IApplicationService
 {
     private readonly SysAdminService _adminService;
-    private readonly SysOrganizeService _organizeService;
     private readonly SysLogService _logService;
-    private readonly SugarRepository<SysOrganize> _thisRepository;
+    private readonly SugarRepository<SysAdmin> _thisRepository;
     private readonly ICapPublisher _capBus;
     private readonly ICacheService _cacheService;
 
@@ -31,18 +30,15 @@ public class OperatorService : IApplicationService
     /// 构造
     /// </summary>
     /// <param name="adminService"></param>
-    /// <param name="organizeService"></param>
     /// <param name="logService"></param>
     /// <param name="thisRepository"></param>
     public OperatorService(SysAdminService adminService
-        , SysOrganizeService organizeService
         , SysLogService logService
-        , SugarRepository<SysOrganize> thisRepository
+        ,SugarRepository<SysAdmin> thisRepository
         , ICapPublisher capBus
         ,ICacheService cacheService)
     {
         _adminService = adminService;
-        _organizeService = organizeService;
         _logService = logService;
         _thisRepository = thisRepository;
         _capBus = capBus;

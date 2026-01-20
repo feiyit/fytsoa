@@ -123,6 +123,7 @@ export const STORAGE_KEYS = {
   REFRESH_TOKEN: "refreshToken",
   USER_INFO: "user-info",
   REMEMBER_ACCOUNT: "remember-account",
+  THEME: "theme",
   PRIMARY_COLOR: "primary-color",
   SECONDARY_MENU_STATE: "secondary-menu-state",
   NAV_TAGS: "nav-tags",

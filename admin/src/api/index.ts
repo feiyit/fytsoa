@@ -7,3 +7,5 @@ export * from './sys/admin';
 export * from './sys/role';
 export * from './sys/logs';
 export * from './sys/safety';
+// 工作流相关接口
+export * from './wf';

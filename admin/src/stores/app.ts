@@ -11,7 +11,7 @@ export const useAppStore = defineStore('app', {
     setLoading(value: boolean) {
       this.loading = value
     },
-    setTheme(theme: 'light' | 'dark') {
+    setTheme(theme: 'light' | 'dark', persist = true) {
       this.theme = theme
       if (typeof document !== 'undefined') {
         const root = document.documentElement
@@ -21,16 +21,28 @@ export const useAppStore = defineStore('app', {
           root.classList.remove('dark')
         }
       }
+
+      if (persist) {
+        appStorage.set(STORAGE_KEYS.THEME, theme)
+      }
     },
     toggleTheme() {
       this.setTheme(this.theme === 'dark' ? 'light' : 'dark')
     },
     initTheme() {
       if (typeof window === 'undefined') return
+
+      // Prefer the user's last choice; fall back to system preference.
+      const saved = appStorage.get<'light' | 'dark'>(STORAGE_KEYS.THEME)
+      if (saved === 'light' || saved === 'dark') {
+        this.setTheme(saved, false)
+        return
+      }
+
       const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches
       const initial = prefersDark ? 'dark' : 'light'
       //console.log('initial',initial);
-      this.setTheme(initial)
+      this.setTheme(initial, false)
     },
     setPrimaryColor(color: string) {
       this.primaryColor = color
