@@ -1,6 +1,13 @@
 <template>
   <div class="soa-form-table">
-    <el-table :data="data" ref="table" :key="toggleIndex" border stripe>
+    <el-table
+      :data="data"
+      ref="table"
+      :key="toggleIndex"
+      border
+      stripe
+      :height="height"
+    >
       <el-table-column type="index" width="50" fixed="left">
         <template #header>
           <el-button
@@ -49,6 +56,7 @@ const props = defineProps({
   placeholder: { type: String, default: "暂无数据" },
   dragSort: { type: Boolean, default: false },
   isAdd: { type: Boolean, default: true },
+  height: { type: [String, Number], default: undefined },
 });
 
 const data = ref<any[]>([]);
@@ -79,11 +87,18 @@ watch(
 const rowAdd = () => {
   const temp = JSON.parse(JSON.stringify(props.addTemplate));
   data.value.push(temp);
+  return temp;
 };
 
 const rowDel = (_row: any, index: number) => {
   data.value.splice(index, 1);
 };
+
+defineExpose({
+  rowAdd,
+  rowDel,
+  getData: () => data.value,
+});
 </script>
 <style scoped>
 .soa-form-table .soa-form-table-handle {

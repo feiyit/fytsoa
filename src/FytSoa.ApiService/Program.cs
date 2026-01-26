@@ -53,6 +53,9 @@ builder.Services.AddControllers(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerConfiguration();
 
+// Rate limiting policies (login, etc.)
+builder.Services.AddFytRateLimiting(builder.Configuration);
+
 // Register DI
 builder.Services.RegisterServices();
 

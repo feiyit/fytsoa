@@ -10,6 +10,7 @@ using FytSoa.Domain.Sys;
 using FytSoa.Sugar;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace FytSoa.Application.Operator;
 
@@ -51,6 +52,7 @@ public class OperatorService : IApplicationService
     /// <param name="loginParam"></param>
     /// <returns></returns>
     [AllowAnonymous]
+    [EnableRateLimiting("login")]
     public async Task<LoginTokenDto> LoginAsync(LoginParam loginParam)
     {
         var loginRes = await _adminService.LoginAsync(loginParam);

@@ -12,6 +12,9 @@ public static class UseMiddleware
         app.AppSetup();
         // 跨域设置
         app.UseCors("FytSoaCors");
+        
+        // Rate limiting (needs routing; keep after CORS so rejected responses still include CORS headers)
+        app.UseRateLimiter();
 
         // DI
         //AppUtils.ServiceProvider = app.ApplicationServices;

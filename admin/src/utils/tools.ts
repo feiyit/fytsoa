@@ -41,6 +41,16 @@ export function uuid(length = 32) {
 }
 
 /**
+ * 生成业务编码（通用）
+ * 示例：generateCode("CK-") => CK-1A2B3C4D
+ * - suffix 仅包含字母+数字（大写）
+ * - 适用于：仓库/单据/计划等需要“前缀 + 随机码”的场景
+ */
+export function generateCode(prefix: string, length: number = 8) {
+  return `${prefix || ''}${uuid(length).toUpperCase()}`;
+}
+
+/**
  * 列表转树形结构
  */
 export function changeTree(data: any) {

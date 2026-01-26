@@ -9,3 +9,5 @@ export * from './sys/logs';
 export * from './sys/safety';
 // 工作流相关接口
 export * from './wf';
+// 资产模块相关接口
+export * from './am';

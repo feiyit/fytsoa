@@ -5,6 +5,12 @@ export const fetchSysCodePage = (params: any) =>
     params,
   });
 
+// 字典值列表（不分页）
+export const fetchSysCodeList = (params?: any) =>
+  requestClient.get('/syscode/list', {
+    params,
+  });
+
 export const fetchSysCodeById = (id: string) =>
   requestClient.get(`/syscode/${id}`);
 

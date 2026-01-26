@@ -93,7 +93,7 @@ interface PageInfo {
   limit: number; // 每页条数
 }
 const loading = ref(false);
-const emit = defineEmits(["selection-change"]);
+const emit = defineEmits(["selection-change", "loaded"]);
 const targetEl = ref<HTMLDivElement | null>(null);
 const props = defineProps({
   /** 表格数据源 */
@@ -240,6 +240,8 @@ const loadData = async () => {
   } else {
     data.value = changeTree(res);
   }
+  // 通知外部：数据加载完成（用于弹框选择回显选中等场景）
+  emit("loaded", { items: data.value, total: total.value, pageInfo: { ...pageInfo } });
   loading.value = false;
 };
 
@@ -309,6 +311,10 @@ defineExpose({
   stableRef,
   refresh,
   upData,
+  setSelectedRowKeys: (keys: (string | number)[]) => {
+    selectedRowKeys.value = keys || [];
+  },
+  getSelectedRowKeys: () => selectedRowKeys.value,
 });
 </script>
 <style scoped>

@@ -8,7 +8,7 @@
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <DocumentationFile>bin\Debug\FytSoa.ApiService.xml</DocumentationFile>
-      <NoWarn>1701;1702;CS1591;CS8601;CS8618;CS8604;CS8602;CS8600;CS0618</NoWarn>
+      <NoWarn>1701;1702;CS1591;CS8601;CS8618;CS8604;CS8602;CS8600;CS0618;ASP0019</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">

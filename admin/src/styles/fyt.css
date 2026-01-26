@@ -17,7 +17,7 @@
 }
 
 .el-button--primary {
-  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.25);
+  box-shadow: 0 0px 0px rgba(37, 99, 235, 0.25);
 }
 
 /* 表单输入：圆角、内边距微调 */
