@@ -11,11 +11,13 @@
 
 ## 2) 常见规则类型（RuleType）
 
-- BORROW_DUE：借用到期
-- WARRANTY_EXPIRE：质保到期
-- INVENTORY_DUE：盘点到期
-- MAINTENANCE_DUE：保养到期
-- TRANSFER_SIGN：调拨签收
+| RuleType | 含义 | 数据来源（当前模块口径） |
+|---|---|---|
+| BORROW_DUE | 借用到期 | 单据管理 OUTBOUND/BORROW，使用 DueTime |
+| WARRANTY_EXPIRE | 质保到期 | 资产台账 WarrantyExpireDate |
+| INVENTORY_DUE | 盘点到期 | 盘点计划 EndTime（或计划到期日期） |
+| MAINTENANCE_DUE | 保养到期 | 保养计划 NextRunTime（或下次执行时间） |
+| TRANSFER_SIGN | 调拨签收 | 单据管理 TRANSFER，使用 DueTime |
 
 ## 3) 配置方式建议
 
@@ -29,4 +31,4 @@
 
 - 提醒任务：规则是模板，任务是实例
 - 资产台账/单据/盘点/维修：任务的业务来源（BizType + BizId）
-
+- 若对应业务模块未启用或无数据，可先停用该规则类型，避免产生空提醒

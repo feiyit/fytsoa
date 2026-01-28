@@ -135,6 +135,12 @@ watch(assetId, load, { immediate: true });
           <el-descriptions-item label="序列号">
             {{ asset.serialNo || "-" }}
           </el-descriptions-item>
+          <el-descriptions-item label="入库时间">
+            {{ asset.inboundTime || "-" }}
+          </el-descriptions-item>
+          <el-descriptions-item label="质保到期日">
+            {{ asset.warrantyExpireDate || "-" }}
+          </el-descriptions-item>
           <el-descriptions-item label="备注">
             {{ asset.remark || "-" }}
           </el-descriptions-item>

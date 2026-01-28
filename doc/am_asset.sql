@@ -284,6 +284,7 @@ CREATE TABLE `am_doc_item` (
   `Price` decimal(18,2) NOT NULL DEFAULT '0.00' COMMENT '单价(可选)',
   `Amount` decimal(18,2) NOT NULL DEFAULT '0.00' COMMENT '金额(可选)',
   `SerialNo` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '序列号(冗余/可选)',
+  `WarrantyExpireDate` date DEFAULT NULL COMMENT '质保到期日(可选)',
   `WarehouseId` bigint NOT NULL DEFAULT '0' COMMENT '仓库Id（行级覆盖）',
   `BinId` bigint NOT NULL DEFAULT '0' COMMENT '库位Id（行级覆盖）',
   `LocationId` bigint NOT NULL DEFAULT '0' COMMENT '地点Id（行级覆盖）',

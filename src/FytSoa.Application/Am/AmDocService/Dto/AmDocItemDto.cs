@@ -38,6 +38,8 @@ public class AmDocItemDto : AppEntity
     [StringLength(128)]
     public string? SerialNo { get; set; }
 
+    public DateTime? WarrantyExpireDate { get; set; }
+
     public long WarehouseId { get; set; } = 0;
     public long BinId { get; set; } = 0;
     public long LocationId { get; set; } = 0;
@@ -45,4 +47,3 @@ public class AmDocItemDto : AppEntity
     [StringLength(512)]
     public string? Remark { get; set; }
 }
-

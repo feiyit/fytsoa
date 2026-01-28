@@ -198,6 +198,8 @@ const bizTypeOptions = [
   { value: "INV_ADJUST", label: "库存调整（INV_ADJUST）" },
   { value: "INVENTORY", label: "盘点（INVENTORY）" },
   { value: "MAINTENANCE", label: "维修/保养（MAINTENANCE）" },
+  { value: "DEPCFG", label: "折旧配置（DEPCFG）" },
+  { value: "DEPRUN", label: "折旧计提（DEPRUN）" },
 ];
 
 const operationOptions = [
@@ -208,6 +210,7 @@ const operationOptions = [
   { value: "STATUS", label: "状态变更（STATUS）" },
   { value: "LOCATION", label: "地点变更（LOCATION）" },
   { value: "OWNER", label: "责任人/使用人变更（OWNER）" },
+  { value: "NET_VALUE", label: "净值变更（NET_VALUE）" },
 ];
 
 const query = reactive({

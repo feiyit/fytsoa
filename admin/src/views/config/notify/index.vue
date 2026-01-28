@@ -2,12 +2,10 @@
   <el-container class="h-full">
     <el-header
       class="bg-card border-border flex flex-wrap items-center justify-between gap-3 rounded-[.5vw]"
+      style="height: auto; padding: 10px 20px"
     >
       <div class="flex flex-wrap items-center gap-3">
-        <el-tabs
-          v-model="activeBox"
-          class="min-w-[240px]"
-        >
+        <el-tabs v-model="activeBox" class="min-w-[120px] mr-5">
           <el-tab-pane name="inbox">
             <template #label>
               <span class="flex items-center gap-2">
@@ -27,7 +25,7 @@
           v-model="query.key"
           placeholder="标题/内容关键词"
           clearable
-          style="width: 220px"
+          style="width: 200px"
         />
 
         <el-select v-model="query.readStatus" style="width: 140px" clearable>
@@ -41,7 +39,10 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <el-popconfirm title="确认将全部通知标记为已读？" @confirm="handleMarkAllRead">
+        <el-popconfirm
+          title="确认将全部通知标记为已读？"
+          @confirm="handleMarkAllRead"
+        >
           <template #reference>
             <el-button :disabled="activeBox !== 'inbox'">全部已读</el-button>
           </template>
@@ -62,7 +63,10 @@
           标记未读
         </el-button>
 
-        <el-popconfirm title="确认删除选中的通知？" @confirm="handleDeleteSelected">
+        <el-popconfirm
+          title="确认删除选中的通知？"
+          @confirm="handleDeleteSelected"
+        >
           <template #reference>
             <el-button type="danger" :disabled="selectedRows.length === 0">
               删除
@@ -84,13 +88,21 @@
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'title'">
-            <el-link type="primary" :underline="false" @click="openDetail(record)">
+            <el-link
+              type="primary"
+              :underline="false"
+              @click="openDetail(record)"
+            >
               <span class="truncate">{{ record.title || "-" }}</span>
             </el-link>
           </template>
 
           <template v-if="column.key === 'sendUser'">
-            {{ record?.sendUser?.fullName || record?.sendUser?.loginAccount || "-" }}
+            {{
+              record?.sendUser?.fullName ||
+              record?.sendUser?.loginAccount ||
+              "-"
+            }}
           </template>
 
           <template v-if="column.key === 'isRead'">
@@ -109,7 +121,9 @@
 
           <template v-if="column.key === 'action'">
             <div class="flex items-center gap-2">
-              <el-button link type="primary" @click="openDetail(record)">查看</el-button>
+              <el-button link type="primary" @click="openDetail(record)"
+                >查看</el-button
+              >
               <el-button
                 v-if="activeBox === 'inbox'"
                 link
@@ -128,7 +142,10 @@
               >
                 未读
               </el-button>
-              <el-popconfirm title="确认删除该通知？" @confirm="handleDeleteRow(record)">
+              <el-popconfirm
+                title="确认删除该通知？"
+                @confirm="handleDeleteRow(record)"
+              >
                 <template #reference>
                   <el-button link type="danger">删除</el-button>
                 </template>
@@ -139,14 +156,23 @@
       </soaTable>
     </el-main>
 
-    <Drawer class="w-[780px]" destroyOnClose :footer="false" :title="drawerTitle">
+    <Drawer
+      class="w-[780px]"
+      destroyOnClose
+      :footer="false"
+      :title="drawerTitle"
+    >
       <el-main style="padding: 0 20px">
         <el-descriptions :column="1" border size="small" label-width="110px">
-          <el-descriptions-item label="标题">{{ detail.title || "-" }}</el-descriptions-item>
+          <el-descriptions-item label="标题">{{
+            detail.title || "-"
+          }}</el-descriptions-item>
           <el-descriptions-item label="发送人">{{
             detail?.sendUser?.fullName || detail?.sendUser?.loginAccount || "-"
           }}</el-descriptions-item>
-          <el-descriptions-item label="时间">{{ formatDateTime(detail.createTime) }}</el-descriptions-item>
+          <el-descriptions-item label="时间">{{
+            formatDateTime(detail.createTime)
+          }}</el-descriptions-item>
           <el-descriptions-item label="状态" v-if="activeBox === 'inbox'">
             <el-tag :type="detail.isRead ? 'success' : 'danger'">
               {{ detail.isRead ? "已读" : "未读" }}
@@ -157,7 +183,9 @@
         <div class="mt-4">
           <div class="mb-2 text-sm text-slate-500">内容</div>
           <el-card shadow="never">
-            <pre class="whitespace-pre-wrap text-sm">{{ detail.content || "-" }}</pre>
+            <pre class="whitespace-pre-wrap text-sm">{{
+              detail.content || "-"
+            }}</pre>
           </el-card>
         </div>
       </el-main>
@@ -200,9 +228,21 @@ const query = reactive({
 const columns = [
   { title: "标题", dataIndex: "title", key: "title", minWidth: 240 },
   { title: "发送人", dataIndex: "sendUser", key: "sendUser", width: 140 },
-  { title: "已读", dataIndex: "isRead", key: "isRead", width: 90, align: "center" },
+  {
+    title: "已读",
+    dataIndex: "isRead",
+    key: "isRead",
+    width: 90,
+    align: "center",
+  },
   { title: "时间", dataIndex: "createTime", key: "createTime", width: 180 },
-  { title: "操作", dataIndex: "action", key: "action", width: 220, fixed: "right" },
+  {
+    title: "操作",
+    dataIndex: "action",
+    key: "action",
+    width: 220,
+    fixed: "right",
+  },
 ];
 
 const selectionChange = (params: any) => {

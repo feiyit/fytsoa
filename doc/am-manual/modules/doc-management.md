@@ -13,13 +13,17 @@
 | RETURN | 归还 | 借用归还、领用退库 |
 | TRANSFER | 调拨 | 仓库/地点/部门之间转移 |
 | CHANGE | 变更 | 资产信息变更（责任人/使用人/地点等） |
-| DISPOSE | 处置 | 报废、出售、丢失 |
+| DISPOSE | 处置 | 报废、出售、丢失（资产退出使用） |
 | INV_ADJUST | 盘盈盘亏 | 盘点差异调整（盘盈/盘亏） |
 
 子类型（SubType）用于更细分的场景，例如：
 - OUTBOUND：ISSUE（领用）、BORROW（借用）
 - RETURN：RETURN（归还）、BACK（退库）
 - DISPOSE：SCRAP（报废）、SELL（出售）、LOSS（丢失）
+
+说明：
+- INV_ADJUST 是“盘点结果的调整单据”，不等同于“盘点计划/盘点执行（INVENTORY）”模块。
+- DISPOSE 表示资产处置动作（报废/出售/丢失等），通常发生在处置审批完成并执行后。
 
 ## 2) 单据状态（Status）
 
@@ -62,6 +66,7 @@
 - 资产Id/资产编号/资产名称（可冗余）
 - 数量、单价、金额
 - 行级仓库/库位/地点（行级覆盖头部的目标值）
+- 质保到期日（WarrantyExpireDate，入库单可选）
 - 备注
 
 > 经验：即使“头部”有来源/目标，明细里仍建议带上行级字段，以便做精细控制与审计。
@@ -84,4 +89,4 @@ flowchart LR
 - 资产台账：单据引用资产，单据完成后通常会导致资产位置/归属/状态变化（具体看系统是否联动）
 - 资产留痕：单据的 CREATE/UPDATE/DELETE 等操作可写入留痕；若你们把“执行”也纳入留痕，建议记录 Operation=STATUS/LOCATION/OWNER 等
 - 提醒：借用到期、调拨签收等可通过单据 DueTime 产生提醒任务
-
+- 入库联动：当 DocType=INBOUND 且状态为“已完成”，系统会同步资产入库时间（InboundTime=BizTime），并可根据明细中的质保到期日同步资产的 WarrantyExpireDate

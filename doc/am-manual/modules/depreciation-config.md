@@ -35,3 +35,23 @@
 - 折旧计提：每月根据折旧配置生成计提批次与明细
 - 资产留痕：若你们需要审计，可把折旧配置的关键调整写入留痕（可选）
 
+## 5) 净值计算（手动/调度）
+
+系统已提供“按折旧配置计算资产净值”的任务方法，仅对**状态=折旧中**的配置生效。
+
+- 调度任务方法：`FytSoa.TaskJob, FytSoa.ApiService`  
+  - `AssetDepreciationNetValueAsync`
+- 手动触发接口（可选）：`/api/amassetdepreciation/recalcNetBookValue`（POST）
+
+appsettings 配置（Manual=仅手动；非 Manual=允许调度/自动执行）：
+
+```json
+"Depreciation": {
+  "AssetDepreciationMode": "Manual",
+  "NetValueOperatorId": "1678330902595375105"
+}
+```
+
+说明：
+- 当净值更新时，会写入资产留痕（Operation=NET_VALUE）
+- 留痕操作人来自 `Depreciation:NetValueOperatorId`

@@ -37,6 +37,8 @@ const formData = reactive<any>({
   brand: "",
   model: "",
   serialNo: "",
+  inboundTime: undefined,
+  warrantyExpireDate: undefined,
   originalValue: 0,
   netBookValue: 0,
   status: 1,
@@ -141,6 +143,8 @@ const resetForm = () => {
     brand: "",
     model: "",
     serialNo: "",
+    inboundTime: undefined,
+    warrantyExpireDate: undefined,
     originalValue: 0,
     netBookValue: 0,
     status: 1,
@@ -315,6 +319,29 @@ defineExpose({ openModal });
               clearable
               maxlength="64"
               show-word-limit
+            />
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="12">
+          <el-form-item label="入库时间">
+            <el-date-picker
+              v-model="formData.inboundTime"
+              type="datetime"
+              value-format="YYYY-MM-DD HH:mm:ss"
+              format="YYYY年MM月DD日 HH:mm:ss"
+              style="width: 100%"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="质保到期日">
+            <el-date-picker
+              v-model="formData.warrantyExpireDate"
+              type="date"
+              value-format="YYYY-MM-DD"
+              format="YYYY年MM月DD日"
+              style="width: 100%"
             />
           </el-form-item>
         </el-col>

@@ -15,10 +15,14 @@ namespace FytSoa.Application.Am;
 public class AmAssetDepreciationService : IApplicationService
 {
     private readonly SugarRepository<AmAssetDepreciation> _thisRepository;
+    private readonly AmAssetDepreciationSchedulerService _schedulerService;
 
-    public AmAssetDepreciationService(SugarRepository<AmAssetDepreciation> thisRepository)
+    public AmAssetDepreciationService(
+        SugarRepository<AmAssetDepreciation> thisRepository,
+        AmAssetDepreciationSchedulerService schedulerService)
     {
         _thisRepository = thisRepository;
+        _schedulerService = schedulerService;
     }
 
     /// <summary>
@@ -84,5 +88,13 @@ public class AmAssetDepreciationService : IApplicationService
         var tenantId = AppUtils.TenantId;
         return await _thisRepository.DeleteAsync(x => x.TenantId == tenantId && ids.Contains(x.Id));
     }
-}
 
+    /// <summary>
+    /// 手动执行：根据折旧配置计算资产净值
+    /// </summary>
+    [HttpPost]
+    public async Task<int> RecalcNetBookValueAsync()
+    {
+        return await _schedulerService.RecalcAssetNetBookValueAsync(force: true);
+    }
+}

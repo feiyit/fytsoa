@@ -10,11 +10,18 @@ namespace FytSoa
     public class TaskJob
     {
         private readonly AmMaintenancePlanSchedulerService _maintenancePlanSchedulerService;
+        private readonly AmAssetDepreciationSchedulerService _assetDepSchedulerService;
+        private readonly AmDepreciationRunSchedulerService _depRunSchedulerService;
 
         // 通过 DI 注入，便于在 Quartz(JobFactory) 场景下使用数据库/服务
-        public TaskJob(AmMaintenancePlanSchedulerService maintenancePlanSchedulerService)
+        public TaskJob(
+            AmMaintenancePlanSchedulerService maintenancePlanSchedulerService,
+            AmAssetDepreciationSchedulerService assetDepSchedulerService,
+            AmDepreciationRunSchedulerService depRunSchedulerService)
         {
             _maintenancePlanSchedulerService = maintenancePlanSchedulerService;
+            _assetDepSchedulerService = assetDepSchedulerService;
+            _depRunSchedulerService = depRunSchedulerService;
         }
 
         /// <summary>
@@ -32,6 +39,22 @@ namespace FytSoa
         public async Task MaintenancePlanNoticeAsync()
         {
             await _maintenancePlanSchedulerService.NotifyDuePlansAsync();
+        }
+
+        /// <summary>
+        /// 折旧配置：按配置计算资产净值（供任务调度调用）
+        /// </summary>
+        public async Task AssetDepreciationNetValueAsync()
+        {
+            await _assetDepSchedulerService.RecalcAssetNetBookValueAsync();
+        }
+
+        /// <summary>
+        /// 折旧计提：根据已确认明细回写资产净值（供任务调度调用）
+        /// </summary>
+        public async Task DepreciationRunNetValueAsync()
+        {
+            await _depRunSchedulerService.ApplyLatestConfirmedRunsAsync();
         }
     }
 }

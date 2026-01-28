@@ -43,3 +43,27 @@ flowchart LR
 - 资产台账：用于报表展示（资产维度的价值变化）
 - 提醒：可选（例如提醒“每月计提”）
 
+## 6) 净值回写（手动/调度）
+
+系统支持“按计提明细回写资产净值”，仅对**状态=已确认**的批次生效。
+
+- 调度任务方法：`FytSoa.TaskJob, FytSoa.ApiService`  
+  - `DepreciationRunNetValueAsync`
+- 手动触发接口（可选）：`/api/amdepreciationrun/syncNetBookValue`（POST）
+
+appsettings 配置说明：
+
+```json
+"Depreciation": {
+  "DepreciationRunMode": "Manual",
+  "NetValueOperatorId": "1678330902595375105"
+}
+```
+
+模式影响：
+- Manual：确认计提批次时**不自动更新**资产净值，仅手动触发/调度时更新
+- 非 Manual：批次**已确认**即刻回写资产净值
+
+留痕：
+- 净值回写会写入资产留痕（Operation=NET_VALUE）
+- 留痕操作人来自 `Depreciation:NetValueOperatorId`

@@ -31,23 +31,46 @@ defineExpose({ openModal });
 <template>
   <Modal :title="title" :closeOnClickModal="false">
     <el-descriptions :column="2" border class="mb-3">
-      <el-descriptions-item label="资产Id">{{ formData.assetId }}</el-descriptions-item>
-      <el-descriptions-item label="业务类型">{{ formData.bizType }}</el-descriptions-item>
-      <el-descriptions-item label="业务Id">{{ formData.bizId }}</el-descriptions-item>
-      <el-descriptions-item label="操作">{{ formData.operation }}</el-descriptions-item>
-      <el-descriptions-item label="操作人Id">{{ formData.operatorId }}</el-descriptions-item>
-      <el-descriptions-item label="操作时间">{{ formData.operateTime }}</el-descriptions-item>
-      <el-descriptions-item label="备注" :span="2">{{ formData.remark }}</el-descriptions-item>
+      <el-descriptions-item label="资产Id">{{
+        formData.assetId
+      }}</el-descriptions-item>
+      <el-descriptions-item label="业务类型">{{
+        formData.bizType
+      }}</el-descriptions-item>
+      <el-descriptions-item label="业务Id">{{
+        formData.bizId
+      }}</el-descriptions-item>
+      <el-descriptions-item label="操作">{{
+        formData.operation
+      }}</el-descriptions-item>
+      <el-descriptions-item label="操作人Id">{{
+        formData.operatorId
+      }}</el-descriptions-item>
+      <el-descriptions-item label="操作时间">{{
+        formData.operateTime
+      }}</el-descriptions-item>
+      <el-descriptions-item label="备注" :span="2">{{
+        formData.remark
+      }}</el-descriptions-item>
     </el-descriptions>
 
     <el-tabs>
       <el-tab-pane label="变更前(BeforeJson)">
-        <el-input type="textarea" :rows="18" :model-value="pretty(formData.beforeJson)" readonly />
+        <el-input
+          type="textarea"
+          :rows="18"
+          :model-value="pretty(formData.beforeJson)"
+          readonly
+        />
       </el-tab-pane>
       <el-tab-pane label="变更后(AfterJson)">
-        <el-input type="textarea" :rows="18" :model-value="pretty(formData.afterJson)" readonly />
+        <el-input
+          type="textarea"
+          :rows="18"
+          :model-value="pretty(formData.afterJson)"
+          readonly
+        />
       </el-tab-pane>
     </el-tabs>
   </Modal>
 </template>
-

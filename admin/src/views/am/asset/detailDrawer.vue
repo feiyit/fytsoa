@@ -119,6 +119,12 @@ defineExpose({ openModal });
         <el-descriptions-item label="序列号">
           {{ formData.serialNo || "-" }}
         </el-descriptions-item>
+        <el-descriptions-item label="入库时间">
+          {{ formData.inboundTime || "-" }}
+        </el-descriptions-item>
+        <el-descriptions-item label="质保到期日">
+          {{ formData.warrantyExpireDate || "-" }}
+        </el-descriptions-item>
         <el-descriptions-item label="备注">
           {{ formData.remark || "-" }}
         </el-descriptions-item>

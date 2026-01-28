@@ -27,6 +27,8 @@
 - INBOUND/OUTBOUND/RETURN/TRANSFER/CHANGE/DISPOSE/INV_ADJUST：单据类型
 - INVENTORY：盘点计划/盘点明细
 - MAINTENANCE：维修/保养工单
+- DEPCFG：折旧配置净值计算
+- DEPRUN：折旧计提净值回写
 
 > 约定：BizType 建议尽量使用“业务域的稳定编码”（例如单据的 DocType），这样统计更方便。
 
@@ -40,6 +42,7 @@
 - STATUS：状态变化（可选）
 - LOCATION：地点变化（可选）
 - OWNER：责任人/使用人变化（可选）
+- NET_VALUE：净值变化（折旧配置/折旧计提回写）
 
 ## 4) 如何查询
 
@@ -69,4 +72,3 @@
 ### Q2：为什么旧数据没有留痕？
 
 留痕通常只从“上线接入后”开始记录。之前发生过的操作不会自动补齐，除非额外执行“回填任务/脚本”。
-

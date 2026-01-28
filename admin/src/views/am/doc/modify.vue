@@ -50,6 +50,7 @@ const itemTemplate = {
   tagCode: "",
   name: "",
   model: "",
+  warrantyExpireDate: undefined,
   qty: 1,
   price: 0,
   amount: 0,
@@ -99,6 +100,7 @@ const applyAssetToRow = (row: any, asset: any) => {
   row.tagCode = asset.tagCode || "";
   row.name = asset.name || "";
   row.model = asset.model || "";
+  row.warrantyExpireDate = asset.warrantyExpireDate || "";
 };
 
 const onAssetPicked = (payload: { rows: any[]; multiple: boolean }) => {
@@ -362,6 +364,17 @@ defineExpose({ openModal });
                 clearable
                 maxlength="200"
                 show-word-limit
+              />
+            </template>
+          </el-table-column>
+          <el-table-column label="质保到期日" width="160">
+            <template #default="{ row }">
+              <el-date-picker
+                v-model="row.warrantyExpireDate"
+                type="date"
+                value-format="YYYY-MM-DD"
+                format="YYYY年MM月DD日"
+                style="width: 100%"
               />
             </template>
           </el-table-column>

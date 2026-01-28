@@ -22,6 +22,13 @@ export async function deleteAmDoc(data: any) {
   });
 }
 
+export async function updateAmDocStatus(data: {
+  ids: Array<string | number>;
+  status: number;
+}) {
+  return requestClient.put("/amdoc/status", data);
+}
+
 // Export (Excel)
 export const exportAmDoc = (data?: any) =>
   requestClient.post("/amdoc/export", data, { responseType: "blob" });

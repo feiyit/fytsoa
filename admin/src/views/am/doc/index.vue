@@ -50,6 +50,12 @@
         </el-form-item>
       </el-form>
       <div>
+        <el-button
+          :disabled="selectedRows.length === 0"
+          @click="openStatusDialog()"
+        >
+          更改状态
+        </el-button>
         <el-popconfirm
           title="确认执行批量删除操作？"
           @confirm="handleBatchDelete"
@@ -124,12 +130,40 @@
 
     <modify ref="modifyRef" @complete="handleSearch" />
     <Detail ref="detailRef" />
+
+    <el-dialog v-model="statusDialogVisible" title="更改单据状态" width="360px">
+      <el-form>
+        <el-form-item label="状态">
+          <el-select
+            v-model="statusForm.status"
+            placeholder="请选择状态"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in statusOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="statusDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="handleStatusSubmit">确定</el-button>
+      </template>
+    </el-dialog>
   </el-container>
 </template>
 
 <script setup lang="ts">
 import dayjs from "dayjs";
-import { fetchAmDocPage, deleteAmDoc, exportAmDoc } from "@/api/am/doc";
+import {
+  fetchAmDocPage,
+  deleteAmDoc,
+  exportAmDoc,
+  updateAmDocStatus,
+} from "@/api/am/doc";
 import { downloadBlob } from "@/utils/download";
 const modify = defineAsyncComponent(() => import("./modify.vue"));
 const Detail = defineAsyncComponent(() => import("./detail.vue"));
@@ -138,6 +172,20 @@ const modifyRef = ref<any>(null);
 const detailRef = ref<any>(null);
 const selectedRows = ref<any[]>([]);
 const exporting = ref(false);
+const statusDialogVisible = ref(false);
+const statusForm = reactive({
+  ids: [] as Array<string | number>,
+  status: undefined as number | undefined,
+});
+const statusOptions = [
+  { value: 0, label: "草稿" },
+  { value: 1, label: "待审批" },
+  { value: 2, label: "已通过" },
+  { value: 3, label: "已驳回" },
+  { value: 4, label: "执行中" },
+  { value: 5, label: "已完成" },
+  { value: 6, label: "已取消" },
+];
 
 const query = reactive({
   page: 1,
@@ -236,6 +284,33 @@ const handleBatchDelete = async () => {
   if (selectedRows.value.length === 0) return;
   await deleteAmDoc(selectedRows.value.map((x: any) => x.id));
   ElMessage.success("删除成功");
+  handleSearch();
+};
+
+const openStatusDialog = (row?: any) => {
+  const ids = row?.id
+    ? [row.id]
+    : selectedRows.value.map((x: any) => x.id);
+  if (ids.length === 0) {
+    ElMessage.warning("请选择需要更改状态的单据");
+    return;
+  }
+  statusForm.ids = ids;
+  statusForm.status = row?.status ?? undefined;
+  statusDialogVisible.value = true;
+};
+
+const handleStatusSubmit = async () => {
+  if (statusForm.status === undefined) {
+    ElMessage.warning("请选择状态");
+    return;
+  }
+  await updateAmDocStatus({
+    ids: statusForm.ids,
+    status: statusForm.status,
+  });
+  ElMessage.success("状态更新成功");
+  statusDialogVisible.value = false;
   handleSearch();
 };
 

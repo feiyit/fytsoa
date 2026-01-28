@@ -15,10 +15,14 @@ namespace FytSoa.Application.Am;
 public class AmDepreciationRunService : IApplicationService
 {
     private readonly SugarRepository<AmDepreciationRun> _thisRepository;
+    private readonly AmDepreciationRunSchedulerService _schedulerService;
 
-    public AmDepreciationRunService(SugarRepository<AmDepreciationRun> thisRepository)
+    public AmDepreciationRunService(
+        SugarRepository<AmDepreciationRun> thisRepository,
+        AmDepreciationRunSchedulerService schedulerService)
     {
         _thisRepository = thisRepository;
+        _schedulerService = schedulerService;
     }
 
     /// <summary>
@@ -100,7 +104,14 @@ public class AmDepreciationRunService : IApplicationService
             }
         });
 
-        return tran.IsSuccess;
+        if (!tran.IsSuccess) return false;
+
+        if (!_schedulerService.IsManualMode && runEntity.Status == 1)
+        {
+            await _schedulerService.ApplyConfirmedRunAsync(runEntity.Id);
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -138,7 +149,14 @@ public class AmDepreciationRunService : IApplicationService
             }
         });
 
-        return tran.IsSuccess;
+        if (!tran.IsSuccess) return false;
+
+        if (!_schedulerService.IsManualMode && runEntity.Status == 1)
+        {
+            await _schedulerService.ApplyConfirmedRunAsync(runEntity.Id);
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -147,9 +165,26 @@ public class AmDepreciationRunService : IApplicationService
     public async Task<bool> ConfirmAsync(long id)
     {
         var tenantId = AppUtils.TenantId;
-        return await _thisRepository.UpdateAsync(
+        var success = await _thisRepository.UpdateAsync(
             x => new AmDepreciationRun { Status = 1 },
             x => x.TenantId == tenantId && x.Id == id);
+        if (!success) return false;
+
+        if (!_schedulerService.IsManualMode)
+        {
+            await _schedulerService.ApplyConfirmedRunAsync(id);
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// 手动执行：根据已确认批次明细回写资产净值
+    /// </summary>
+    [HttpPost]
+    public async Task<int> SyncNetBookValueAsync()
+    {
+        return await _schedulerService.ApplyLatestConfirmedRunsAsync(force: true);
     }
 
     /// <summary>
@@ -170,4 +205,3 @@ public class AmDepreciationRunService : IApplicationService
         return tran.IsSuccess;
     }
 }
-

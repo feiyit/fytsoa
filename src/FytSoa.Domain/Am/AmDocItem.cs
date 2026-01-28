@@ -91,6 +91,11 @@ public class AmDocItem : Entity
     public string? SerialNo { get; set; }
 
     /// <summary>
+    /// 质保到期日（可选）
+    /// </summary>
+    public DateTime? WarrantyExpireDate { get; set; }
+
+    /// <summary>
     /// 仓库Id（行级覆盖）
     /// </summary>
     [Required]
