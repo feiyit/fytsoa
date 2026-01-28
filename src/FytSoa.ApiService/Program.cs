@@ -58,10 +58,11 @@ builder.Services.AddFytRateLimiting(builder.Configuration);
 
 // Register DI
 builder.Services.RegisterServices();
+// Quartz DLL 方式任务类（SchedulerDispatchJob 会优先从 DI 容器解析实例）
+builder.Services.AddScoped<FytSoa.TaskJob>();
 
 // Mapper
 builder.Services.AddMapperProfile();
-
 
 var app = builder.Build();
 

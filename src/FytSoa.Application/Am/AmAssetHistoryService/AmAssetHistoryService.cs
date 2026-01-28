@@ -30,7 +30,7 @@ public class AmAssetHistoryService : IApplicationService
     {
         var tenantId = param.TenantId != 0 ? param.TenantId : AppUtils.TenantId;
         var query = _thisRepository.AsQueryable()
-            .Where(x => x.TenantId == tenantId)
+            //.Where(x => x.TenantId == tenantId)
             .WhereIF(param.AssetId != 0, x => x.AssetId == param.AssetId)
             .WhereIF(!string.IsNullOrEmpty(param.BizType), x => x.BizType == param.BizType)
             .WhereIF(param.BizId != 0, x => x.BizId == param.BizId)

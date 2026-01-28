@@ -1,6 +1,5 @@
 using FytSoa.ApiService.Middleware;
 using FytSoa.Common.Utils;
-using FytSoa.Quartz.Extensions;
 
 namespace FytSoa.ApiService;
 
@@ -33,6 +32,5 @@ public static class UseMiddleware
         // Jwt中间件处理
         app.UseMiddleware<JwtMiddleware>();
         
-        app.UseQuartz();
     }
 }

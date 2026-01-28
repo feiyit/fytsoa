@@ -3,9 +3,9 @@ using FytSoa.Application;
 using FytSoa.Common.Cache;
 using FytSoa.Common.Utils;
 using FytSoa.Common.Jwt;
+using FytSoa.Common.Scheduler.Extensions;
 using FytSoa.DynamicApi;
 using FytSoa.Generator;
-using FytSoa.Quartz.Extensions;
 using FytSoa.Sugar;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,8 +44,7 @@ public static  class BootStrapperIoC
         Unique.GetInstance();
         
         // Quartz
-        services.AddQuartz();
-        services.AddQuartzClassJobs();
+        services.AddFytScheduler(AppUtils.Configuration);
         
         // Cap
         services.AddCap(x =>

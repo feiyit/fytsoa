@@ -17,7 +17,6 @@
 
     <ItemGroup>
       <PackageReference Include="FytSoa.DynamicApi" Version="1.0.2-preview-03" />
-      <PackageReference Include="FytSoa.Quartz" Version="1.0.1" />
       <PackageReference Include="Mapster" Version="7.3.0" />
       <PackageReference Include="Mapster.DependencyInjection" Version="1.0.0" />
     </ItemGroup>

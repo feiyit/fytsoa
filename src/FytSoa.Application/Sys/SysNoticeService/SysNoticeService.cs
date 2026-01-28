@@ -50,7 +50,7 @@ public class SysNoticeService : IApplicationService
             // 查询发件人=已发送
             .WhereIF(param.Type==1,m=>m.SendUserId==param.Id && m.Status==0 && m.IsSend)
             // 查询收件人=收件箱
-            .WhereIF(param.Type==2,m=>(SqlFunc.ToString(m.AcceptUserIds).Contains(param.Id.ToString()) || SqlFunc.ToString(m.AcceptUserIds)=="[0]") && m.SendUserId!=param.Id && m.Status==0 && !m.IsSend)
+            .WhereIF(param.Type==2,m=>(SqlFunc.ToString(m.AcceptUserIds).Contains(param.Id.ToString()) || SqlFunc.ToString(m.AcceptUserIds)=="[0]") && m.Status==0 && !m.IsSend)
             // 查询 带文件的通知
             .WhereIF(param.Type==3,m=> !SqlFunc.IsNullOrEmpty(m.Files) && (SqlFunc.ToString(m.AcceptUserIds).Contains(param.Id.ToString()) || SqlFunc.ToString(m.AcceptUserIds)=="[0]")  && m.SendUserId!=param.Id  && m.Status==0 && !m.IsSend)
             // 未读=1 已读=2  全部=0
@@ -84,7 +84,7 @@ public class SysNoticeService : IApplicationService
         return new SysNoticeTotalDto()
         {
             Unread=await _thisRepository.CountAsync(m=>SqlFunc.Subqueryable<SysNoticeRead>().Where(s=>s.UserId==userId && s.IsRead && m.Id==s.NoticeId).Count()==0 
-                                                       && m.SendUserId!=userId && m.Status==0 && !m.IsSend 
+                                                       && m.Status==0 && !m.IsSend 
                                                        && (SqlFunc.ToString(m.AcceptUserIds).Contains(userId.ToString()) || SqlFunc.ToString(m.AcceptUserIds)=="[0]")),
             Draft = await _thisRepository.CountAsync (m => m.SendUserId==userId && m.Status==1 && m.IsSend),
             Archive = await _thisRepository.CountAsync (m => SqlFunc.ToString(m.AcceptUserIds).Contains(userId.ToString()) && m.Status==2),
@@ -117,6 +117,8 @@ public class SysNoticeService : IApplicationService
                 IsRead = true
             });
         }
+
+        res.IsRead = true;
         return res;
     }
 

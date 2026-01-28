@@ -1,7 +1,5 @@
-﻿using FytSoa.Quartz.Enum;
-using FytSoa.Quartz.Model;
-using FytSoa.Quartz.Service;
-using FytSoa.Quartz.Tools;
+﻿using FytSoa.Common.Scheduler.Models;
+using FytSoa.Common.Scheduler.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FytSoa.Application.Sys;
@@ -13,17 +11,17 @@ namespace FytSoa.Application.Sys;
 public class SysQuartzService : IApplicationService
 {
     
-    private readonly IQuartzHandle _quartzHandle;
-    private readonly IQuartzLogService _logService;
+    private readonly IFytSchedulerService _scheduler;
+    private readonly IFytSchedulerLogService _logService;
     /// <summary>
     /// 构造
     /// </summary>
-    /// <param name="quartzHandle"></param>
+    /// <param name="scheduler"></param>
     /// <param name="logService"></param>
-    public SysQuartzService(IQuartzHandle quartzHandle
-        , IQuartzLogService logService)
+    public SysQuartzService(IFytSchedulerService scheduler
+        , IFytSchedulerLogService logService)
     {
-        _quartzHandle = quartzHandle;
+        _scheduler = scheduler;
         _logService = logService;
     }
     
@@ -31,18 +29,18 @@ public class SysQuartzService : IApplicationService
     /// 获取任务列表
     /// </summary>
     /// <returns></returns>
-    public async Task<List<QuarzTask>> GetAsync() => 
-        await _quartzHandle.GetJobs();
+    public async Task<List<QuartzTask>> GetAsync() => 
+        await _scheduler.GetJobs();
     
     /// <summary>
     /// 新建任务
     /// </summary>
     /// <returns></returns>
-    public async Task<ResultQuartzData> AddAsync([FromBody]QuarzTask model)
+    public async Task<ResultQuartzData> AddAsync([FromBody]QuartzTask model)
     {
-        var date = await  _quartzHandle.AddJob(model);
+        var res = await _scheduler.AddJob(model);
         model.Status = Convert.ToInt32(JobState.暂停);
-        return date;
+        return res;
     }
     
     /// <summary>
@@ -50,46 +48,46 @@ public class SysQuartzService : IApplicationService
     /// </summary>
     /// <returns></returns>
     [HttpPut]
-    public async Task<ResultQuartzData> PutPauseJob([FromBody]QuarzTask model) =>
-        await _quartzHandle.Pause(model);
+    public async Task<ResultQuartzData> PutPauseJob([FromBody]QuartzTask model) =>
+        await _scheduler.Pause(model);
     
     /// <summary>
     /// 开启任务
     /// </summary>
     /// <returns></returns>
     [HttpPut]
-    public async Task<ResultQuartzData> PutStartJob([FromBody]QuarzTask model) => 
-        await _quartzHandle.Start(model);
+    public async Task<ResultQuartzData> PutStartJob([FromBody]QuartzTask model) => 
+        await _scheduler.Start(model);
     
     /// <summary>
     /// 立即执行任务
     /// </summary>
     /// <returns></returns>
     [HttpPut]
-    public async Task<ResultQuartzData> PutRunJob([FromBody]QuarzTask model) => 
-        await _quartzHandle.Run(model);
+    public async Task<ResultQuartzData> PutRunJob([FromBody]QuartzTask model) => 
+        await _scheduler.Run(model);
     
     /// <summary>
     /// 修改任务
     /// </summary>
     /// <returns></returns>
     [HttpPut]
-    public async Task<ResultQuartzData> Put([FromBody]QuarzTask model) => 
-        await _quartzHandle.Update(model);
+    public async Task<ResultQuartzData> Put([FromBody]QuartzTask model) => 
+        await _scheduler.Update(model);
     
     /// <summary>
     /// 删除任务
     /// </summary>
     /// <returns></returns>
     [HttpDelete]
-    public async Task<ResultQuartzData> Delete([FromBody]QuarzTask model) => 
-        await _quartzHandle.Remove(model);
+    public async Task<ResultQuartzData> Delete([FromBody]QuartzTask model) => 
+        await _scheduler.Remove(model);
     
     /// <summary>
     /// 获取任务执行记录
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public async Task<ResultData<QuarzTasklog>> JobRecord(string taskName, string groupName, int current, int size) => 
+    public async Task<ResultData<QuartzTaskLog>> JobRecord(string taskName, string groupName, int current, int size) => 
         await _logService.GetLogs(taskName,groupName, current, size);
 }

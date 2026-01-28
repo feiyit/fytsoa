@@ -73,17 +73,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import {
-  ref,
-  reactive,
-  computed,
-  watch,
-  onMounted,
-  onUnmounted,
-  defineProps,
-  defineEmits,
-  defineExpose,
-} from "vue";
 import { Icon } from "@iconify/vue";
 import { SELECTION_ALL, SELECTION_INVERT, SELECTION_NONE } from "@shene/table";
 import type { STableRowSelection } from "@shene/table";
@@ -223,7 +212,19 @@ watch(
   (newVal) => {
     Object.assign(pageInfo, newVal);
   },
-  { deep: true }
+  { deep: true },
+);
+
+watch(
+  () => props.tableData,
+  (newVal) => {
+    data.value = [];
+    setTimeout(() => {
+      total.value = newVal.length;
+      data.value = newVal;
+    }, 100);
+  },
+  { deep: true },
 );
 const loadData = async () => {
   loading.value = true;
@@ -241,7 +242,11 @@ const loadData = async () => {
     data.value = changeTree(res);
   }
   // 通知外部：数据加载完成（用于弹框选择回显选中等场景）
-  emit("loaded", { items: data.value, total: total.value, pageInfo: { ...pageInfo } });
+  emit("loaded", {
+    items: data.value,
+    total: total.value,
+    pageInfo: { ...pageInfo },
+  });
   loading.value = false;
 };
 

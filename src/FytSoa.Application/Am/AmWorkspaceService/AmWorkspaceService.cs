@@ -56,24 +56,26 @@ public class AmWorkspaceService : IApplicationService
         };
 
         // ========== 资产 ==========
-        var assetQuery = _assetRepository.AsQueryable()
-            .Where(x => x.TenantId == tenantId && !x.IsDel);
+        // SqlSugar 的查询对象是“链式累加条件”的；为避免 Where(...) 影响后续统计，
+        // 这里每次统计都从同一份基础过滤条件重新构建查询。
+        ISugarQueryable<AmAsset> AssetQuery() =>
+            _assetRepository.AsQueryable().Where(x => x.TenantId == tenantId && !x.IsDel);
 
-        res.AssetTotal = await assetQuery.CountAsync();
+        res.AssetTotal = await AssetQuery().CountAsync();
         res.AssetDelTotal = await _assetRepository.AsQueryable()
             .Where(x => x.TenantId == tenantId && x.IsDel)
             .CountAsync();
-        res.AssetOriginalValueTotal = await assetQuery.SumAsync(x => x.OriginalValue);
-        res.AssetNetBookValueTotal = await assetQuery.SumAsync(x => x.NetBookValue);
-        res.AssetWarrantyOverdueTotal = await assetQuery
+        res.AssetOriginalValueTotal = await AssetQuery().SumAsync(x => x.OriginalValue);
+        res.AssetNetBookValueTotal = await AssetQuery().SumAsync(x => x.NetBookValue);
+        res.AssetWarrantyOverdueTotal = await AssetQuery()
             .Where(x => x.WarrantyExpireDate != null && x.WarrantyExpireDate < now)
             .CountAsync();
-        res.AssetWarrantyDueSoonTotal = await assetQuery
+        res.AssetWarrantyDueSoonTotal = await AssetQuery()
             .Where(x => x.WarrantyExpireDate != null && x.WarrantyExpireDate >= now && x.WarrantyExpireDate <= dueSoonEnd)
             .CountAsync();
 
-        res.AssetStatusStats = await BuildAssetStatusStatsAsync(assetQuery);
-        res.AssetCreatedByMonth = await BuildCreatedByMonthAsync(assetQuery, year);
+        res.AssetStatusStats = await BuildAssetStatusStatsAsync(AssetQuery());
+        res.AssetCreatedByMonth = await BuildCreatedByMonthAsync(AssetQuery(), year);
         res.AssetCategoryTopStats = await BuildTopCategoryStatsAsync(tenantId);
 
         // ========== 主数据 ==========

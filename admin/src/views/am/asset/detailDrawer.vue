@@ -13,15 +13,38 @@ const [Drawer, drawerApi] = useSoaDrawer({
 const statusText = (v: number) => {
   switch (v) {
     case 1:
-      return "在用";
+      return "在库";
     case 2:
-      return "闲置";
+      return "在用";
     case 3:
-      return "维修";
+      return "借出";
     case 4:
-      return "报废";
+      return "维修中";
+    case 5:
+      return "闲置";
+    case 6:
+      return "在途";
+    case 7:
+      return "处置中";
+    case 8:
+      return "已处置";
     default:
       return v != null ? String(v) : "-";
+  }
+};
+
+const statusTagType = (v: number) => {
+  switch (v) {
+    case 2:
+      return "success";
+    case 4:
+      return "danger";
+    case 7:
+      return "warning";
+    case 8:
+      return "danger";
+    default:
+      return "info";
   }
 };
 
@@ -53,7 +76,7 @@ defineExpose({ openModal });
           {{ formData.id || "-" }}
         </el-descriptions-item>
         <el-descriptions-item label="状态">
-          <el-tag :type="formData.status === 1 ? 'success' : 'info'">
+          <el-tag :type="statusTagType(formData.status)">
             {{ statusText(formData.status) }}
           </el-tag>
         </el-descriptions-item>
@@ -116,4 +139,3 @@ defineExpose({ openModal });
     </template>
   </Drawer>
 </template>
-

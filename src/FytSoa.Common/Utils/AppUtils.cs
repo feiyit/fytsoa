@@ -52,7 +52,9 @@ public static class AppUtils
     {
         get
         {
-            var paramToken = HttpContext.Request.Headers[JwtConstant.TokenName].ToString();
+            var ctx = HttpContext;
+            if (ctx == null) return new JwtToken();
+            var paramToken = ctx.Request?.Headers[JwtConstant.TokenName].ToString();
             return string.IsNullOrEmpty(paramToken) ? new JwtToken() : JwtAuthService.SerializeJwt(paramToken);
         }
     }
@@ -60,7 +62,7 @@ public static class AppUtils
     /// <summary>
     /// 获取Token字符串
     /// </summary>
-    public static string TokenString => HttpContext.Request.Headers[JwtConstant.TokenName].ToString();
+    public static string TokenString => HttpContext?.Request?.Headers[JwtConstant.TokenName].ToString() ?? string.Empty;
 
     /// <summary>
     /// 获取登录人编号
@@ -109,8 +111,11 @@ public static class AppUtils
     /// <returns></returns>
     public static T GetService<T>() where T : class
     {
-        var httpContextAccessor = ServiceProvider.GetRequiredService<IHttpContextAccessor>();
-        return httpContextAccessor.HttpContext.RequestServices.GetService<T>();
+        if (ServiceProvider == null) return default;
+        var httpContextAccessor = ServiceProvider.GetService<IHttpContextAccessor>();
+        // 后台任务/Quartz Job 没有 HttpContext，此时直接从根容器取服务
+        var sp = httpContextAccessor?.HttpContext?.RequestServices ?? ServiceProvider;
+        return sp.GetService<T>();
     }
 
     

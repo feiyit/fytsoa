@@ -39,6 +39,11 @@ public class AmMaintenancePlan : Entity
     public int CycleValue { get; set; } = 1;
 
     /// <summary>
+    /// 保养管理员Id（sys_admin.Id）
+    /// </summary>
+    public long ManagerId { get; set; } = 0;
+
+    /// <summary>
     /// 下次执行时间（生成保养工单）
     /// </summary>
     public DateTime? NextRunTime { get; set; }

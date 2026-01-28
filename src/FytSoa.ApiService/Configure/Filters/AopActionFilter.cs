@@ -24,22 +24,20 @@ namespace FytSoa.ApiService.Filters;
 /// </summary>
 public class AopActionFilter : IAsyncActionFilter
 {
-    private static readonly List<string> IgnoreApi = new()
-    {
+    private static readonly List<string> IgnoreApi =
+    [
         "api/sysfile/",
-        "/api/exammaterial/upload",
         "api/captcha",
         "/chathub"
-    };
+    ];
     
-    private static readonly List<string> IgnorePowerApi = new()
-    {
+    private static readonly List<string> IgnorePowerApi =
+    [
         "api/sysfile/",
-        "/api/exammaterial/upload",
         "api/captcha",
         "/chathub",
         "login"
-    };
+    ];
     
     private readonly ICapPublisher _capBus;
     private readonly ICacheService _cacheService;
@@ -87,8 +85,8 @@ public class AopActionFilter : IAsyncActionFilter
         var request = context.HttpContext.Request;
         var urlPath = request.Path.ToString().ToLower();
         // 默认启用签名校验，IgnoreApi 中的路径不做签名验证
-        var isSecurity = true; //!IgnoreApi.Any(item => urlPath.Contains(item));
-
+        var isSecurity = !IgnoreApi.Any(item => urlPath.Contains(item));
+        Console.WriteLine($"过滤API标识结果：{isSecurity}");
         if (isSecurity)
         {
             var method = request.Method;

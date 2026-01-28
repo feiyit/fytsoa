@@ -39,10 +39,14 @@
             style="width: 140px"
             clearable
           >
-            <el-option label="在用" :value="1" />
-            <el-option label="闲置" :value="2" />
-            <el-option label="维修" :value="3" />
-            <el-option label="报废" :value="4" />
+            <el-option label="在库" :value="1" />
+            <el-option label="在用" :value="2" />
+            <el-option label="借出" :value="3" />
+            <el-option label="维修中" :value="4" />
+            <el-option label="闲置" :value="5" />
+            <el-option label="在途" :value="6" />
+            <el-option label="处置中" :value="7" />
+            <el-option label="已处置" :value="8" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -82,11 +86,17 @@
         @selection-change="selectionChange"
       >
         <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'originalValue'">
+            {{ formatMoney(record.originalValue) }}
+          </template>
+          <template v-if="column.key === 'netBookValue'">
+            {{ formatMoney(record.netBookValue) }}
+          </template>
           <template v-if="column.key === 'categoryId'">
             {{ record.categoryObj?.name || record.categoryId || "-" }}
           </template>
           <template v-if="column.key === 'status'">
-            <el-tag :type="record.status === 1 ? 'success' : 'info'">
+            <el-tag :type="statusTagType(record.status)">
               {{ statusText(record.status) }}
             </el-tag>
           </template>
@@ -117,6 +127,13 @@ import dayjs from "dayjs";
 import { fetchAmAssetPage, deleteAmAsset, exportAmAsset } from "@/api/am/asset";
 import { fetchSysCodeList } from "@/api/sys/code";
 import { downloadBlob } from "@/utils/download";
+
+const formatMoney = (v: any) =>
+  (Number(v) || 0).toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
 const modify = defineAsyncComponent(() => import("./modify.vue"));
 const tableRef = ref<any>(null);
 const modifyRef = ref<any>(null);
@@ -157,6 +174,20 @@ const columns = [
   { title: "型号", dataIndex: "model", key: "model", width: 120 },
   { title: "标签码", dataIndex: "tagCode", key: "tagCode", width: 140 },
   {
+    title: "原值",
+    dataIndex: "originalValue",
+    key: "originalValue",
+    width: 130,
+    align: "right",
+  },
+  {
+    title: "净值",
+    dataIndex: "netBookValue",
+    key: "netBookValue",
+    width: 130,
+    align: "right",
+  },
+  {
     title: "状态",
     dataIndex: "status",
     key: "status",
@@ -176,15 +207,46 @@ const columns = [
 const statusText = (v: number) => {
   switch (v) {
     case 1:
-      return "在用";
+      return "在库";
     case 2:
-      return "闲置";
+      return "在用";
     case 3:
-      return "维修";
+      return "借出";
     case 4:
-      return "报废";
+      return "维修中";
+    case 5:
+      return "闲置";
+    case 6:
+      return "在途";
+    case 7:
+      return "处置中";
+    case 8:
+      return "已处置";
     default:
       return "未知";
+  }
+};
+
+const statusTagType = (v: number) => {
+  switch (v) {
+    case 1:
+      return "info";
+    case 2:
+      return "success";
+    case 3:
+      return "warning";
+    case 4:
+      return "danger";
+    case 5:
+      return "info";
+    case 6:
+      return "info";
+    case 7:
+      return "warning";
+    case 8:
+      return "danger";
+    default:
+      return "info";
   }
 };
 

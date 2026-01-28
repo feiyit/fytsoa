@@ -24,7 +24,7 @@ onBeforeUnmount(() => {
 });
 
 const currentYear = new Date().getFullYear();
-const yearOptions = Array.from({ length: 5 }, (_, i) => currentYear - 4 + i);
+const yearOptions = Array.from({ length: 5 }, (_, i) => currentYear - 1 + i);
 
 const query = reactive({
   year: currentYear,
@@ -98,7 +98,11 @@ const refresh = async () => {
   }
 };
 
-const dateTimeText = computed(() => dayjs(now.value).format("YYYY-MM-DD HH:mm:ss"));
+const dateTimeText = computed(() =>
+  dayjs(now.value).format("YYYY-MM-DD HH:mm:ss"),
+);
+
+const formatNumber = (v: number) => (Number(v) || 0).toLocaleString();
 
 const toMoney = (v: number) =>
   (Number(v) || 0).toLocaleString(undefined, {
@@ -108,39 +112,43 @@ const toMoney = (v: number) =>
 
 const assetStatusOptions = computed(() =>
   createPieChartOptions({
-    title: "资产状态分布",
     data: (summary.value.assetStatusStats || []).map((x) => ({
       name: x.name,
       value: x.value,
     })),
-  })
+  }),
 );
 
 const reminderStatusOptions = computed(() =>
   createPieChartOptions({
-    title: "提醒任务状态分布",
     data: (summary.value.reminderTaskStatusStats || []).map((x) => ({
       name: x.name,
       value: x.value,
     })),
-  })
+  }),
 );
 
 const maintenanceOrderStatusOptions = computed(() => {
-  const xAxis = (summary.value.maintenanceOrderStatusStats || []).map((x) => x.name);
-  const data = (summary.value.maintenanceOrderStatusStats || []).map((x) => x.value);
+  const xAxis = (summary.value.maintenanceOrderStatusStats || []).map(
+    (x) => x.name,
+  );
+  const data = (summary.value.maintenanceOrderStatusStats || []).map(
+    (x) => x.value,
+  );
   return createBarChartOptions({
-    title: "工单状态分布",
     xAxis,
     series: [{ name: "数量", data }],
   });
 });
 
 const maintenanceOrderTypeOptions = computed(() => {
-  const xAxis = (summary.value.maintenanceOrderTypeStats || []).map((x) => x.name);
-  const data = (summary.value.maintenanceOrderTypeStats || []).map((x) => x.value);
+  const xAxis = (summary.value.maintenanceOrderTypeStats || []).map(
+    (x) => x.name,
+  );
+  const data = (summary.value.maintenanceOrderTypeStats || []).map(
+    (x) => x.value,
+  );
   return createBarChartOptions({
-    title: "工单类型分布",
     xAxis,
     series: [{ name: "数量", data }],
   });
@@ -150,7 +158,6 @@ const assetCreatedOptions = computed(() => {
   const xAxis = (summary.value.assetCreatedByMonth || []).map((x) => x.name);
   const data = (summary.value.assetCreatedByMonth || []).map((x) => x.value);
   return createLineChartOptions({
-    title: `${summary.value.year} 年新增资产趋势`,
     xAxis,
     series: [{ name: "新增资产", data }],
   });
@@ -161,17 +168,19 @@ const assetCategoryTopOptions = computed(() => {
   const xAxis = list.map((x) => x.name);
   const data = list.map((x) => x.value);
   return createBarChartOptions({
-    title: "资产分类 Top 10",
     xAxis,
     series: [{ name: "数量", data }],
   });
 });
 
 const inventoryPlanStatusOptions = computed(() => {
-  const xAxis = (summary.value.inventoryPlanStatusStats || []).map((x) => x.name);
-  const data = (summary.value.inventoryPlanStatusStats || []).map((x) => x.value);
+  const xAxis = (summary.value.inventoryPlanStatusStats || []).map(
+    (x) => x.name,
+  );
+  const data = (summary.value.inventoryPlanStatusStats || []).map(
+    (x) => x.value,
+  );
   return createBarChartOptions({
-    title: "盘点计划状态分布",
     xAxis,
     series: [{ name: "数量", data }],
   });
@@ -186,7 +195,14 @@ const inventoryPlanStatusOptions = computed(() => {
     >
       <div class="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div class="text-base font-semibold">资产数据统计中心</div>
+          <div class="flex items-center gap-2 text-base font-semibold">
+            <span
+              class="inline-flex h-8 w-8 items-center justify-center rounded-[10px] bg-primary-500/10 text-primary-600 dark:text-primary-300"
+            >
+              <el-icon :size="16"><DataAnalysis /></el-icon>
+            </span>
+            <span>资产数据统计中心</span>
+          </div>
           <div class="mt-1 text-xs text-slate-500 dark:text-slate-400">
             数据时间：{{ dateTimeText }}（接口统计时间：{{
               dayjs(summary.statsTime).format("YYYY-MM-DD HH:mm:ss")
@@ -195,8 +211,17 @@ const inventoryPlanStatusOptions = computed(() => {
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
-          <el-select v-model="query.year" style="width: 110px" @change="refresh">
-            <el-option v-for="y in yearOptions" :key="y" :label="`${y}年`" :value="y" />
+          <el-select
+            v-model="query.year"
+            style="width: 110px"
+            @change="refresh"
+          >
+            <el-option
+              v-for="y in yearOptions"
+              :key="y"
+              :label="`${y}年`"
+              :value="y"
+            />
           </el-select>
           <el-input-number
             v-model="query.dueSoonDays"
@@ -206,8 +231,12 @@ const inventoryPlanStatusOptions = computed(() => {
             style="width: 150px"
             @change="refresh"
           />
-          <span class="text-xs text-slate-500 dark:text-slate-400">提醒：到期天数</span>
-          <el-button :loading="loading" type="primary" plain @click="refresh">刷新</el-button>
+          <span class="text-xs text-slate-500 dark:text-slate-400"
+            >提醒：到期天数</span
+          >
+          <el-button :loading="loading" type="primary" plain @click="refresh"
+            >刷新</el-button
+          >
         </div>
       </div>
 
@@ -217,47 +246,182 @@ const inventoryPlanStatusOptions = computed(() => {
         <template #default>
           <el-row :gutter="12">
             <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-              <el-card shadow="never" class="bg-white/60 dark:bg-slate-900/30">
-                <el-statistic title="资产总数" :value="summary.assetTotal" />
-                <div class="mt-2 text-xs text-slate-500">
-                  已删除：{{ summary.assetDelTotal }}
+              <el-card
+                shadow="never"
+                class="relative overflow-hidden bg-white/70 transition hover:-translate-y-[1px] hover:shadow-md dark:bg-slate-900/30"
+              >
+                <div
+                  class="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-blue-500/20 blur-2xl"
+                />
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div
+                      class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400"
+                    >
+                      <span
+                        class="inline-flex h-7 w-7 items-center justify-center rounded-[10px] bg-blue-500/10 text-blue-600 dark:text-blue-300"
+                      >
+                        <el-icon :size="16"><Box /></el-icon>
+                      </span>
+                      <span>资产总数</span>
+                    </div>
+                    <div
+                      class="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      {{ formatNumber(summary.assetTotal) }}
+                    </div>
+                  </div>
+                  <el-tag size="small" type="info" effect="plain">台账</el-tag>
                 </div>
-                <div class="mt-1 text-xs text-slate-500">
-                  质保已过期：{{ summary.assetWarrantyOverdueTotal }}，{{ summary.dueSoonDays }} 天内到期：{{
-                    summary.assetWarrantyDueSoonTotal
-                  }}
+
+                <div class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  已删除：<span
+                    class="font-medium text-slate-700 dark:text-slate-200"
+                    >{{ formatNumber(summary.assetDelTotal) }}</span
+                  >
+                </div>
+                <div class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  质保已过期：<span
+                    class="font-medium text-rose-600 dark:text-rose-300"
+                    >{{ formatNumber(summary.assetWarrantyOverdueTotal) }}</span
+                  >
+                  ，{{ summary.dueSoonDays }} 天内到期：<span
+                    class="font-medium text-amber-600 dark:text-amber-300"
+                    >{{ formatNumber(summary.assetWarrantyDueSoonTotal) }}</span
+                  >
                 </div>
               </el-card>
             </el-col>
 
             <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-              <el-card shadow="never" class="bg-white/60 dark:bg-slate-900/30">
-                <div class="text-xs text-slate-500">资产原值总额</div>
-                <div class="mt-1 text-lg font-semibold">{{ toMoney(summary.assetOriginalValueTotal) }}</div>
-                <div class="mt-3 text-xs text-slate-500">资产净值总额</div>
-                <div class="mt-1 text-lg font-semibold">{{ toMoney(summary.assetNetBookValueTotal) }}</div>
-              </el-card>
-            </el-col>
+              <el-card
+                shadow="never"
+                class="relative overflow-hidden bg-white/70 transition hover:-translate-y-[1px] hover:shadow-md dark:bg-slate-900/30"
+              >
+                <div
+                  class="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-emerald-500/20 blur-2xl"
+                />
+                <div class="flex items-start justify-between gap-2">
+                  <div
+                    class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400"
+                  >
+                    <span
+                      class="inline-flex h-7 w-7 items-center justify-center rounded-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-300"
+                    >
+                      <el-icon :size="16"><Coin /></el-icon>
+                    </span>
+                    <span>资产价值</span>
+                  </div>
+                  <el-tag size="small" type="success" effect="plain"
+                    >金额</el-tag
+                  >
+                </div>
 
-            <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-              <el-card shadow="never" class="bg-white/60 dark:bg-slate-900/30">
-                <el-statistic title="供应商" :value="summary.vendorTotal" />
-                <div class="mt-2 text-xs text-slate-500">
-                  启用：{{ summary.vendorEnabledTotal }}
+                <div class="mt-3 text-xs text-slate-500 dark:text-slate-400">
+                  资产原值总额
+                </div>
+                <div
+                  class="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100"
+                >
+                  {{ toMoney(summary.assetOriginalValueTotal) }}
+                </div>
+                <div class="mt-3 text-xs text-slate-500 dark:text-slate-400">
+                  资产净值总额
+                </div>
+                <div
+                  class="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100"
+                >
+                  {{ toMoney(summary.assetNetBookValueTotal) }}
                 </div>
               </el-card>
             </el-col>
 
             <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-              <el-card shadow="never" class="bg-white/60 dark:bg-slate-900/30">
-                <el-statistic title="地点 / 仓库 / 库位" :value="summary.locationTotal" />
-                <div class="mt-2 text-xs text-slate-500">
-                  地点启用：{{ summary.locationEnabledTotal }}
+              <el-card
+                shadow="never"
+                class="relative overflow-hidden bg-white/70 transition hover:-translate-y-[1px] hover:shadow-md dark:bg-slate-900/30"
+              >
+                <div
+                  class="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-violet-500/20 blur-2xl"
+                />
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div
+                      class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400"
+                    >
+                      <span
+                        class="inline-flex h-7 w-7 items-center justify-center rounded-[10px] bg-violet-500/10 text-violet-600 dark:text-violet-300"
+                      >
+                        <el-icon :size="16"><UserFilled /></el-icon>
+                      </span>
+                      <span>供应商</span>
+                    </div>
+                    <div
+                      class="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      {{ formatNumber(summary.vendorTotal) }}
+                    </div>
+                  </div>
+                  <el-tag size="small" type="warning" effect="plain"
+                    >主数据</el-tag
+                  >
                 </div>
-                <div class="mt-1 text-xs text-slate-500">
-                  仓库：{{ summary.warehouseTotal }}（启用 {{ summary.warehouseEnabledTotal }}），库位：{{
-                    summary.warehouseBinTotal
-                  }}
+                <div class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  启用：<span
+                    class="font-medium text-slate-700 dark:text-slate-200"
+                    >{{ formatNumber(summary.vendorEnabledTotal) }}</span
+                  >
+                </div>
+              </el-card>
+            </el-col>
+
+            <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
+              <el-card
+                shadow="never"
+                class="relative overflow-hidden bg-white/70 transition hover:-translate-y-[1px] hover:shadow-md dark:bg-slate-900/30"
+              >
+                <div
+                  class="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-cyan-500/20 blur-2xl"
+                />
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div
+                      class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400"
+                    >
+                      <span
+                        class="inline-flex h-7 w-7 items-center justify-center rounded-[10px] bg-cyan-500/10 text-cyan-700 dark:text-cyan-300"
+                      >
+                        <el-icon :size="16"><LocationFilled /></el-icon>
+                      </span>
+                      <span>地点 / 仓库 / 库位</span>
+                    </div>
+                    <div
+                      class="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      {{ formatNumber(summary.locationTotal) }}
+                    </div>
+                  </div>
+                  <el-tag size="small" type="info" effect="plain">位置</el-tag>
+                </div>
+
+                <div class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  地点启用：<span
+                    class="font-medium text-slate-700 dark:text-slate-200"
+                    >{{ formatNumber(summary.locationEnabledTotal) }}</span
+                  >
+                </div>
+                <div class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  仓库：<span
+                    class="font-medium text-slate-700 dark:text-slate-200"
+                    >{{ formatNumber(summary.warehouseTotal) }}</span
+                  >（启用
+                  <span
+                    class="font-medium text-slate-700 dark:text-slate-200"
+                    >{{ formatNumber(summary.warehouseEnabledTotal) }}</span
+                  >），库位：<span
+                    class="font-medium text-slate-700 dark:text-slate-200"
+                    >{{ formatNumber(summary.warehouseBinTotal) }}</span
+                  >
                 </div>
               </el-card>
             </el-col>
@@ -265,40 +429,168 @@ const inventoryPlanStatusOptions = computed(() => {
 
           <el-row :gutter="12" class="mt-3">
             <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-              <el-card shadow="never" class="bg-white/60 dark:bg-slate-900/30">
-                <el-statistic title="盘点计划" :value="summary.inventoryPlanTotal" />
-                <div class="mt-2 text-xs text-slate-500">
-                  进行中：{{ summary.inventoryPlanRunningTotal }}
+              <el-card
+                shadow="never"
+                class="relative overflow-hidden bg-white/70 transition hover:-translate-y-[1px] hover:shadow-md dark:bg-slate-900/30"
+              >
+                <div
+                  class="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-indigo-500/20 blur-2xl"
+                />
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div
+                      class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400"
+                    >
+                      <span
+                        class="inline-flex h-7 w-7 items-center justify-center rounded-[10px] bg-indigo-500/10 text-indigo-600 dark:text-indigo-300"
+                      >
+                        <el-icon :size="16"><List /></el-icon>
+                      </span>
+                      <span>盘点计划</span>
+                    </div>
+                    <div
+                      class="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      {{ formatNumber(summary.inventoryPlanTotal) }}
+                    </div>
+                  </div>
+                  <el-tag size="small" type="primary" effect="plain"
+                    >盘点</el-tag
+                  >
+                </div>
+                <div class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  进行中：<span
+                    class="font-medium text-slate-700 dark:text-slate-200"
+                    >{{ formatNumber(summary.inventoryPlanRunningTotal) }}</span
+                  >
                 </div>
               </el-card>
             </el-col>
 
             <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-              <el-card shadow="never" class="bg-white/60 dark:bg-slate-900/30">
-                <el-statistic title="保养计划" :value="summary.maintenancePlanTotal" />
-                <div class="mt-2 text-xs text-slate-500">
-                  启用：{{ summary.maintenancePlanEnabledTotal }}
+              <el-card
+                shadow="never"
+                class="relative overflow-hidden bg-white/70 transition hover:-translate-y-[1px] hover:shadow-md dark:bg-slate-900/30"
+              >
+                <div
+                  class="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-teal-500/20 blur-2xl"
+                />
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div
+                      class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400"
+                    >
+                      <span
+                        class="inline-flex h-7 w-7 items-center justify-center rounded-[10px] bg-teal-500/10 text-teal-700 dark:text-teal-300"
+                      >
+                        <el-icon :size="16"><Calendar /></el-icon>
+                      </span>
+                      <span>保养计划</span>
+                    </div>
+                    <div
+                      class="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      {{ formatNumber(summary.maintenancePlanTotal) }}
+                    </div>
+                  </div>
+                  <el-tag size="small" type="success" effect="plain"
+                    >保养</el-tag
+                  >
+                </div>
+                <div class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  启用：<span
+                    class="font-medium text-slate-700 dark:text-slate-200"
+                    >{{
+                      formatNumber(summary.maintenancePlanEnabledTotal)
+                    }}</span
+                  >
                 </div>
               </el-card>
             </el-col>
 
             <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-              <el-card shadow="never" class="bg-white/60 dark:bg-slate-900/30">
-                <el-statistic title="维修/保养工单" :value="summary.maintenanceOrderTotal" />
-                <div class="mt-2 text-xs text-slate-500">
-                  待处理：{{ summary.maintenanceOrderOpenTotal }}
+              <el-card
+                shadow="never"
+                class="relative overflow-hidden bg-white/70 transition hover:-translate-y-[1px] hover:shadow-md dark:bg-slate-900/30"
+              >
+                <div
+                  class="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-amber-500/20 blur-2xl"
+                />
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div
+                      class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400"
+                    >
+                      <span
+                        class="inline-flex h-7 w-7 items-center justify-center rounded-[10px] bg-amber-500/10 text-amber-700 dark:text-amber-300"
+                      >
+                        <el-icon :size="16"><Tools /></el-icon>
+                      </span>
+                      <span>维修/保养工单</span>
+                    </div>
+                    <div
+                      class="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      {{ formatNumber(summary.maintenanceOrderTotal) }}
+                    </div>
+                  </div>
+                  <el-tag size="small" type="warning" effect="plain"
+                    >工单</el-tag
+                  >
+                </div>
+                <div class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  待处理：<span
+                    class="font-medium text-slate-700 dark:text-slate-200"
+                    >{{ formatNumber(summary.maintenanceOrderOpenTotal) }}</span
+                  >
                 </div>
               </el-card>
             </el-col>
 
             <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-              <el-card shadow="never" class="bg-white/60 dark:bg-slate-900/30">
-                <el-statistic title="提醒任务" :value="summary.reminderTaskTotal" />
-                <div class="mt-2 text-xs text-slate-500">
-                  未关闭：{{ summary.reminderTaskOpenTotal }}，已逾期：{{ summary.reminderTaskOverdueTotal }}
+              <el-card
+                shadow="never"
+                class="relative overflow-hidden bg-white/70 transition hover:-translate-y-[1px] hover:shadow-md dark:bg-slate-900/30"
+              >
+                <div
+                  class="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-rose-500/20 blur-2xl"
+                />
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div
+                      class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400"
+                    >
+                      <span
+                        class="inline-flex h-7 w-7 items-center justify-center rounded-[10px] bg-rose-500/10 text-rose-600 dark:text-rose-300"
+                      >
+                        <el-icon :size="16"><BellFilled /></el-icon>
+                      </span>
+                      <span>提醒任务</span>
+                    </div>
+                    <div
+                      class="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      {{ formatNumber(summary.reminderTaskTotal) }}
+                    </div>
+                  </div>
+                  <el-tag size="small" type="danger" effect="plain"
+                    >提醒</el-tag
+                  >
                 </div>
-                <div class="mt-1 text-xs text-slate-500">
-                  {{ summary.dueSoonDays }} 天内到期：{{ summary.reminderTaskDueSoonTotal }}
+                <div class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  未关闭：<span
+                    class="font-medium text-slate-700 dark:text-slate-200"
+                    >{{ formatNumber(summary.reminderTaskOpenTotal) }}</span
+                  >，已逾期：<span
+                    class="font-medium text-rose-600 dark:text-rose-300"
+                    >{{ formatNumber(summary.reminderTaskOverdueTotal) }}</span
+                  >
+                </div>
+                <div class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  {{ summary.dueSoonDays }} 天内到期：<span
+                    class="font-medium text-amber-600 dark:text-amber-300"
+                    >{{ formatNumber(summary.reminderTaskDueSoonTotal) }}</span
+                  >
                 </div>
               </el-card>
             </el-col>
@@ -306,40 +598,165 @@ const inventoryPlanStatusOptions = computed(() => {
 
           <el-row :gutter="12" class="mt-3">
             <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-              <el-card shadow="never" class="bg-white/60 dark:bg-slate-900/30">
-                <el-statistic title="单据" :value="summary.docTotal" />
+              <el-card
+                shadow="never"
+                class="relative overflow-hidden bg-white/70 transition hover:-translate-y-[1px] hover:shadow-md dark:bg-slate-900/30"
+              >
+                <div
+                  class="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-slate-500/20 blur-2xl"
+                />
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div
+                      class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400"
+                    >
+                      <span
+                        class="inline-flex h-7 w-7 items-center justify-center rounded-[10px] bg-slate-500/10 text-slate-600 dark:text-slate-300"
+                      >
+                        <el-icon :size="16"><Document /></el-icon>
+                      </span>
+                      <span>单据</span>
+                    </div>
+                    <div
+                      class="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      {{ formatNumber(summary.docTotal) }}
+                    </div>
+                  </div>
+                  <el-tag size="small" type="info" effect="plain">业务</el-tag>
+                </div>
               </el-card>
             </el-col>
 
             <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-              <el-card shadow="never" class="bg-white/60 dark:bg-slate-900/30">
-                <el-statistic title="折旧配置(资产)" :value="summary.assetDepreciationTotal" />
-                <div class="mt-2 text-xs text-slate-500">
-                  折旧中：{{ summary.assetDepreciationEnabledTotal }}
+              <el-card
+                shadow="never"
+                class="relative overflow-hidden bg-white/70 transition hover:-translate-y-[1px] hover:shadow-md dark:bg-slate-900/30"
+              >
+                <div
+                  class="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-fuchsia-500/20 blur-2xl"
+                />
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div
+                      class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400"
+                    >
+                      <span
+                        class="inline-flex h-7 w-7 items-center justify-center rounded-[10px] bg-fuchsia-500/10 text-fuchsia-700 dark:text-fuchsia-300"
+                      >
+                        <el-icon :size="16"><Tickets /></el-icon>
+                      </span>
+                      <span>折旧配置(资产)</span>
+                    </div>
+                    <div
+                      class="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      {{ formatNumber(summary.assetDepreciationTotal) }}
+                    </div>
+                  </div>
+                  <el-tag size="small" type="primary" effect="plain"
+                    >折旧</el-tag
+                  >
                 </div>
-                <div class="mt-1 text-xs text-slate-500">
-                  累计折旧：{{ toMoney(summary.assetDepreciationAccumAmountTotal) }}
+                <div class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  折旧中：<span
+                    class="font-medium text-slate-700 dark:text-slate-200"
+                    >{{
+                      formatNumber(summary.assetDepreciationEnabledTotal)
+                    }}</span
+                  >
+                </div>
+                <div class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  累计折旧：<span
+                    class="font-medium text-slate-700 dark:text-slate-200"
+                    >{{
+                      toMoney(summary.assetDepreciationAccumAmountTotal)
+                    }}</span
+                  >
                 </div>
               </el-card>
             </el-col>
 
             <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-              <el-card shadow="never" class="bg-white/60 dark:bg-slate-900/30">
-                <el-statistic title="折旧计提批次" :value="summary.depreciationRunTotal" />
-                <div class="mt-2 text-xs text-slate-500">
-                  最近期间：{{ summary.lastDepreciationRunPeriod || "-" }}
+              <el-card
+                shadow="never"
+                class="relative overflow-hidden bg-white/70 transition hover:-translate-y-[1px] hover:shadow-md dark:bg-slate-900/30"
+              >
+                <div
+                  class="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-orange-500/20 blur-2xl"
+                />
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div
+                      class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400"
+                    >
+                      <span
+                        class="inline-flex h-7 w-7 items-center justify-center rounded-[10px] bg-orange-500/10 text-orange-700 dark:text-orange-300"
+                      >
+                        <el-icon :size="16"><Timer /></el-icon>
+                      </span>
+                      <span>折旧计提批次</span>
+                    </div>
+                    <div
+                      class="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      {{ formatNumber(summary.depreciationRunTotal) }}
+                    </div>
+                  </div>
+                  <el-tag size="small" type="warning" effect="plain"
+                    >期间</el-tag
+                  >
                 </div>
-                <div class="mt-1 text-xs text-slate-500">
-                  计提合计：{{ toMoney(summary.depreciationRunTotalAmountAll) }}
+                <div class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  最近期间：<span
+                    class="font-medium text-slate-700 dark:text-slate-200"
+                    >{{ summary.lastDepreciationRunPeriod || "-" }}</span
+                  >
+                </div>
+                <div class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  计提合计：<span
+                    class="font-medium text-slate-700 dark:text-slate-200"
+                    >{{ toMoney(summary.depreciationRunTotalAmountAll) }}</span
+                  >
                 </div>
               </el-card>
             </el-col>
 
             <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-              <el-card shadow="never" class="bg-white/60 dark:bg-slate-900/30">
-                <el-statistic title="提醒规则" :value="summary.reminderRuleTotal" />
-                <div class="mt-2 text-xs text-slate-500">
-                  启用：{{ summary.reminderRuleEnabledTotal }}
+              <el-card
+                shadow="never"
+                class="relative overflow-hidden bg-white/70 transition hover:-translate-y-[1px] hover:shadow-md dark:bg-slate-900/30"
+              >
+                <div
+                  class="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-pink-500/20 blur-2xl"
+                />
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div
+                      class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400"
+                    >
+                      <span
+                        class="inline-flex h-7 w-7 items-center justify-center rounded-[10px] bg-pink-500/10 text-pink-700 dark:text-pink-300"
+                      >
+                        <el-icon :size="16"><Bell /></el-icon>
+                      </span>
+                      <span>提醒规则</span>
+                    </div>
+                    <div
+                      class="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      {{ formatNumber(summary.reminderRuleTotal) }}
+                    </div>
+                  </div>
+                  <el-tag size="small" type="danger" effect="plain"
+                    >规则</el-tag
+                  >
+                </div>
+                <div class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  启用：<span
+                    class="font-medium text-slate-700 dark:text-slate-200"
+                    >{{ formatNumber(summary.reminderRuleEnabledTotal) }}</span
+                  >
                 </div>
               </el-card>
             </el-col>
@@ -354,6 +771,21 @@ const inventoryPlanStatusOptions = computed(() => {
           shadow="never"
           class="h-full bg-card border-border rounded-[.5vw] !border-slate-200/80 dark:!border-slate-750"
         >
+          <template #header>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2 font-medium">
+                <span
+                  class="inline-flex h-8 w-8 items-center justify-center rounded-[10px] bg-blue-500/10 text-blue-600 dark:text-blue-300"
+                >
+                  <el-icon :size="16"><PieChart /></el-icon>
+                </span>
+                <span>资产状态分布</span>
+              </div>
+              <el-tag size="small" type="info" effect="plain"
+                >总计 {{ formatNumber(summary.assetTotal) }}</el-tag
+              >
+            </div>
+          </template>
           <soaChart :options="assetStatusOptions" :height="260" />
         </el-card>
       </el-col>
@@ -363,6 +795,22 @@ const inventoryPlanStatusOptions = computed(() => {
           shadow="never"
           class="h-full bg-card border-border rounded-[.5vw] !border-slate-200/80 dark:!border-slate-750"
         >
+          <template #header>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2 font-medium">
+                <span
+                  class="inline-flex h-8 w-8 items-center justify-center rounded-[10px] bg-amber-500/10 text-amber-700 dark:text-amber-300"
+                >
+                  <el-icon :size="16"><TrendCharts /></el-icon>
+                </span>
+                <span>工单状态分布</span>
+              </div>
+              <el-tag size="small" type="warning" effect="plain"
+                >待处理
+                {{ formatNumber(summary.maintenanceOrderOpenTotal) }}</el-tag
+              >
+            </div>
+          </template>
           <soaChart :options="maintenanceOrderStatusOptions" :height="260" />
         </el-card>
       </el-col>
@@ -374,6 +822,19 @@ const inventoryPlanStatusOptions = computed(() => {
           shadow="never"
           class="h-full bg-card border-border rounded-[.5vw] !border-slate-200/80 dark:!border-slate-750"
         >
+          <template #header>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2 font-medium">
+                <span
+                  class="inline-flex h-8 w-8 items-center justify-center rounded-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-300"
+                >
+                  <el-icon :size="16"><Histogram /></el-icon>
+                </span>
+                <span>{{ summary.year }} 年新增资产趋势</span>
+              </div>
+              <el-tag size="small" type="success" effect="plain">年度</el-tag>
+            </div>
+          </template>
           <soaChart :options="assetCreatedOptions" :height="280" />
         </el-card>
       </el-col>
@@ -383,6 +844,19 @@ const inventoryPlanStatusOptions = computed(() => {
           shadow="never"
           class="h-full bg-card border-border rounded-[.5vw] !border-slate-200/80 dark:!border-slate-750"
         >
+          <template #header>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2 font-medium">
+                <span
+                  class="inline-flex h-8 w-8 items-center justify-center rounded-[10px] bg-violet-500/10 text-violet-600 dark:text-violet-300"
+                >
+                  <el-icon :size="16"><CollectionTag /></el-icon>
+                </span>
+                <span>资产分类 Top 10</span>
+              </div>
+              <el-tag size="small" type="info" effect="plain">分类</el-tag>
+            </div>
+          </template>
           <soaChart :options="assetCategoryTopOptions" :height="280" />
         </el-card>
       </el-col>
@@ -394,6 +868,22 @@ const inventoryPlanStatusOptions = computed(() => {
           shadow="never"
           class="h-full bg-card border-border rounded-[.5vw] !border-slate-200/80 dark:!border-slate-750"
         >
+          <template #header>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2 font-medium">
+                <span
+                  class="inline-flex h-8 w-8 items-center justify-center rounded-[10px] bg-indigo-500/10 text-indigo-600 dark:text-indigo-300"
+                >
+                  <el-icon :size="16"><List /></el-icon>
+                </span>
+                <span>盘点计划状态分布</span>
+              </div>
+              <el-tag size="small" type="primary" effect="plain"
+                >进行中
+                {{ formatNumber(summary.inventoryPlanRunningTotal) }}</el-tag
+              >
+            </div>
+          </template>
           <soaChart :options="inventoryPlanStatusOptions" :height="260" />
         </el-card>
       </el-col>
@@ -403,6 +893,22 @@ const inventoryPlanStatusOptions = computed(() => {
           shadow="never"
           class="h-full bg-card border-border rounded-[.5vw] !border-slate-200/80 dark:!border-slate-750"
         >
+          <template #header>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2 font-medium">
+                <span
+                  class="inline-flex h-8 w-8 items-center justify-center rounded-[10px] bg-rose-500/10 text-rose-600 dark:text-rose-300"
+                >
+                  <el-icon :size="16"><BellFilled /></el-icon>
+                </span>
+                <span>提醒任务状态分布</span>
+              </div>
+              <el-tag size="small" type="danger" effect="plain"
+                >逾期
+                {{ formatNumber(summary.reminderTaskOverdueTotal) }}</el-tag
+              >
+            </div>
+          </template>
           <soaChart :options="reminderStatusOptions" :height="260" />
         </el-card>
       </el-col>
@@ -414,6 +920,21 @@ const inventoryPlanStatusOptions = computed(() => {
           shadow="never"
           class="bg-card border-border rounded-[.5vw] !border-slate-200/80 dark:!border-slate-750"
         >
+          <template #header>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2 font-medium">
+                <span
+                  class="inline-flex h-8 w-8 items-center justify-center rounded-[10px] bg-amber-500/10 text-amber-700 dark:text-amber-300"
+                >
+                  <el-icon :size="16"><Tools /></el-icon>
+                </span>
+                <span>工单类型分布</span>
+              </div>
+              <el-tag size="small" type="warning" effect="plain"
+                >总计 {{ formatNumber(summary.maintenanceOrderTotal) }}</el-tag
+              >
+            </div>
+          </template>
           <soaChart :options="maintenanceOrderTypeOptions" :height="240" />
         </el-card>
       </el-col>

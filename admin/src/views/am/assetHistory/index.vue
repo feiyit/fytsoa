@@ -19,12 +19,17 @@
           >
             <template #append>
               <div class="flex items-center gap-1">
-                <el-button type="primary" @click.stop="openAssetPicker">
-                  选择
-                </el-button>
-                <el-button v-if="pickedAsset" @click.stop="clearPickedAsset">
-                  清空
-                </el-button>
+                <el-button
+                  type="primary"
+                  icon="Check"
+                  @click.stop="openAssetPicker"
+                ></el-button>
+                <el-button
+                  v-if="pickedAsset"
+                  icon="CircleClose"
+                  style="margin-left: 2px"
+                  @click.stop="clearPickedAsset"
+                ></el-button>
               </div>
             </template>
           </el-input>
@@ -93,6 +98,9 @@
         @loaded="onLoaded"
       >
         <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'operatorId'">
+            <span>{{ receiverLabel(record) }}</span>
+          </template>
           <template v-if="column.key === 'assetId'">
             <el-link
               v-if="record.assetId && String(record.assetId) !== '0'"
@@ -126,6 +134,7 @@ import {
   exportAmAssetHistory,
 } from "@/api/am/assetHistory";
 import { fetchAmAssetById } from "@/api/am/asset";
+import { fetchAdminById } from "@/api/sys/admin";
 import SoaAssetPicker from "@/component/soaAssetPicker/index.vue";
 import { downloadBlob } from "@/utils/download";
 const Detail = defineAsyncComponent(() => import("./detail.vue"));
@@ -143,6 +152,39 @@ const pickedAsset = ref<any | null>(null);
 // 页面列表通常只返回 assetId；若未返回 assetObj，则按需补齐，避免列表只显示 id。
 const assetCache = reactive<Record<string, any>>({});
 const assetLoading = ref<Set<string>>(new Set());
+const adminCache = reactive<Record<string, any>>({});
+const adminLoading = ref<Set<string>>(new Set());
+
+const getAdminLabel = (u: any) =>
+  u?.fullName ||
+  u?.displayName ||
+  u?.userName ||
+  u?.loginAccount ||
+  u?.mobile ||
+  u?.id;
+
+const receiverLabel = (record: any) => {
+  const id = record?.operatorId != null ? String(record.operatorId) : "";
+  const u = adminCache[id];
+  const name = getAdminLabel(u);
+  if (name && id && id !== "0") return `${name}`;
+  if (name) return `${name}`;
+  return id && id !== "0" ? `ID:${id}` : "-";
+};
+
+const ensureAdmin = async (id: string) => {
+  if (!id || id === "0") return;
+  if (adminCache[id]) return;
+  if (adminLoading.value.has(id)) return;
+  adminLoading.value.add(id);
+  try {
+    adminCache[id] = await fetchAdminById(id);
+  } catch {
+    // ignore
+  } finally {
+    adminLoading.value.delete(id);
+  }
+};
 
 // 业务类型/操作：下拉提供常用值，同时允许手动输入扩展值
 const bizTypeOptions = [
@@ -172,7 +214,7 @@ const query = reactive({
   page: 1,
   tenantId: "0",
   key: "",
-  assetId: 0 as number,
+  assetId: "0",
   bizType: "",
   operation: "",
 });
@@ -180,9 +222,9 @@ const query = reactive({
 const columns = [
   { title: "资产", dataIndex: "assetId", key: "assetId", minWidth: 240 },
   { title: "业务类型", dataIndex: "bizType", key: "bizType", width: 140 },
-  { title: "业务Id", dataIndex: "bizId", key: "bizId", width: 120 },
+  { title: "业务", dataIndex: "bizId", key: "bizId", width: 180 },
   { title: "操作", dataIndex: "operation", key: "operation", width: 140 },
-  { title: "操作人Id", dataIndex: "operatorId", key: "operatorId", width: 120 },
+  { title: "操作人", dataIndex: "operatorId", key: "operatorId", width: 140 },
   {
     title: "操作时间",
     dataIndex: "operateTime",
@@ -218,7 +260,7 @@ const openAssetPicker = () => {
 
 const onAssetPicked = (payload: { rows: any[]; multiple: boolean }) => {
   pickedAsset.value = payload?.rows?.[0] || null;
-  query.assetId = pickedAsset.value?.id ? Number(pickedAsset.value.id) : 0;
+  query.assetId = pickedAsset.value?.id ? pickedAsset.value.id : "0";
 };
 
 const clearPickedAsset = () => {
@@ -308,6 +350,15 @@ const onLoaded = async (payload: { items: any[] }) => {
         .map((it) => String(it.assetId)),
     ),
   );
+
+  const uids = Array.from(
+    new Set(
+      items
+        .filter((it) => it?.operatorId && String(it.operatorId) !== "0")
+        .map((it) => String(it.operatorId)),
+    ),
+  );
   await Promise.all(ids.map((id) => ensureAsset(id)));
+  await Promise.all(uids.map((id) => ensureAdmin(id)));
 };
 </script>

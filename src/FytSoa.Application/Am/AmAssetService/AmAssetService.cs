@@ -161,7 +161,8 @@ public class AmAssetService : IApplicationService
     /// <summary>
     /// 新增资产
     /// </summary>
-    public async Task<bool> AddAsync(AmAssetDto model)
+    [UnitOfWork]
+    public async Task AddAsync(AmAssetDto model)
     {
         var tenantId = model.TenantId != 0 ? model.TenantId : AppUtils.TenantId;
         model.TenantId = tenantId;
@@ -172,22 +173,17 @@ public class AmAssetService : IApplicationService
         entity.CreateTime = DateTime.Now;
         entity.UpdateTime = null;
 
-        var tran = await _thisRepository.Context.Ado.UseTranAsync(async () =>
-        {
-            await _thisRepository.InsertAsync(entity);
-            await _historyRepository.InsertAsync(AmAssetHistoryUtils.Build(
-                tenantId,
-                entity.Id,
-                "ASSET",
-                entity.Id,
-                "CREATE",
-                null,
-                entity,
-                remark: $"新增资产：{entity.AssetNo}/{entity.Name}"
-            ));
-        });
-
-        return tran.IsSuccess;
+        await _thisRepository.InsertAsync(entity);
+        await _historyRepository.InsertAsync(AmAssetHistoryUtils.Build(
+            tenantId,
+            entity.Id,
+            "ASSET",
+            entity.Id,
+            "CREATE",
+            null,
+            entity,
+            remark: $"新增资产：{entity.AssetNo}/{entity.Name}"
+        ));
     }
 
     /// <summary>

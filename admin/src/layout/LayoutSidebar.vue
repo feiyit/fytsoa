@@ -58,7 +58,7 @@ const toggleSecondaryCollapse = () => {
     </div>
 
     <!-- 下方：左右菜单区域 -->
-    <div class="flex flex-1">
+    <div class="flex flex-1 min-h-0">
       <!-- 最左侧：一级菜单（宽度 80px） -->
       <div
         class="flex w-[86px] flex-col items-center border-r pt-2 pl-2 pr-2 border-b border-slate-200/80 dark:border-slate-750 dark:bg-[#1c1e22] backdrop-blur"
@@ -87,7 +87,7 @@ const toggleSecondaryCollapse = () => {
       <!-- 右侧：对应一级菜单下的二级/三级/四级菜单区域（使用 Element Plus Menu） -->
       <div
         v-if="secondaryMenus.length"
-        class="flex flex-col border-r border-slate-200/80 dark:bj-[#1c1e22] transition-[width] duration-200 dark:border-slate-750"
+        class="flex flex-col min-h-0 border-r border-slate-200/80 dark:bj-[#1c1e22] transition-[width] duration-200 dark:border-slate-750"
         :class="secondaryCollapsed ? 'w-16' : 'w-[200px]'"
       >
         <header
@@ -119,7 +119,7 @@ const toggleSecondaryCollapse = () => {
           </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto">
+        <div class="flex-1 min-h-0 overflow-y-auto">
           <el-menu
             :default-active="activeSecondaryKey || ''"
             :collapse="secondaryCollapsed"

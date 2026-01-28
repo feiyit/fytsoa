@@ -297,14 +297,17 @@ defineExpose({ openModal });
                 >
                   <template #append>
                     <div class="flex items-center gap-1">
-                      <el-button type="primary" @click.stop="openAssetPicker"
-                        >选择</el-button
-                      >
+                      <el-button
+                        type="primary"
+                        icon="Check"
+                        @click.stop="openAssetPicker"
+                      ></el-button>
                       <el-button
                         v-if="pickedBizAsset"
+                        icon="CircleClose"
+                        style="margin-left: 2px"
                         @click.stop="clearBizAsset"
-                        >清空</el-button
-                      >
+                      ></el-button>
                     </div>
                   </template>
                 </el-input>

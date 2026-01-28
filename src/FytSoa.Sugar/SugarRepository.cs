@@ -13,10 +13,9 @@ public class SugarRepository<T> : SimpleClient<T> where T : class ,new()
 {
     public SugarRepository(ISqlSugarClient? context = null) : base(context)
     {
-        Context = AppUtils.GetService<ISqlSugarClient>();
+        // 兼容后台任务：优先使用 DI 注入的 ISqlSugarClient，避免依赖 HttpContext。
+        Context = context ?? AppUtils.GetService<ISqlSugarClient>();
         if (Context == null) return;
-        var tenantId = AppUtils.TenantId;
-        var loginUser = AppUtils.LoginUser;
         #region 处理租户数据过滤
         /*foreach(var entityType in TenantProperties.DomainEntity){
             var lambda = DynamicExpressionParser.ParseLambda
@@ -30,6 +29,12 @@ public class SugarRepository<T> : SimpleClient<T> where T : class ,new()
         //Console.WriteLine("租户编号："+token.TenantId);
         Context.Aop.DataExecuting = (oldValue, entityInfo) =>
         {
+            // 非请求上下文（Quartz/后台任务）不做自动填充，避免 TenantId 被错误覆盖为 0
+            if (AppUtils.HttpContext == null) return;
+
+            var tenantId = AppUtils.TenantId;
+            var loginUser = AppUtils.LoginUser;
+
             //新增操作
             if (entityInfo.OperationType == DataFilterType.InsertByObject 
                 && !TenantProperties.IgnoreAddEntity.Contains(entityInfo.EntityName))

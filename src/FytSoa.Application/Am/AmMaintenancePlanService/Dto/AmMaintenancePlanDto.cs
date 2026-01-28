@@ -24,6 +24,11 @@ public class AmMaintenancePlanDto : AppEntity
 
     public int CycleValue { get; set; } = 1;
 
+    /// <summary>
+    /// 保养管理员Id（sys_admin.Id）
+    /// </summary>
+    public long ManagerId { get; set; } = 0;
+
     public DateTime? NextRunTime { get; set; }
 
     public bool IsEnabled { get; set; } = true;
@@ -41,4 +46,3 @@ public class AmMaintenancePlanDto : AppEntity
     public DateTime? UpdateTime { get; set; }
     public string? UpdateUser { get; set; }
 }
-

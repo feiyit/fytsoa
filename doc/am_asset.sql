@@ -384,6 +384,7 @@ CREATE TABLE `am_maintenance_plan` (
   `Name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '计划名称',
   `CycleType` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '周期类型：DAY/WEEK/MONTH/YEAR',
   `CycleValue` int NOT NULL DEFAULT '1' COMMENT '周期值',
+  `ManagerId` bigint NOT NULL DEFAULT '0' COMMENT '保养管理员Id（sys_admin.Id）',
   `NextRunTime` datetime DEFAULT NULL COMMENT '下次执行时间(生成保养工单)',
   `IsEnabled` bit(1) NOT NULL DEFAULT b'1' COMMENT '启用状态',
   `ScopeJson` json DEFAULT NULL COMMENT '适用范围(JSON)：资产列表/分类/地点等',

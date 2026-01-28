@@ -7,6 +7,7 @@ import { fetchAmLocationList } from "@/api/am/location";
 import { fetchAmWarehouseList } from "@/api/am/warehouse";
 import { fetchAmVendorList } from "@/api/am/vendor";
 import { fetchOrgUnitList } from "@/api";
+import { fetchAdminList } from "@/api";
 
 const title = ref("计划详情");
 const loading = ref(false);
@@ -66,6 +67,7 @@ const vendorMap = ref<Record<string, string>>({});
 const locationMap = ref<Record<string, string>>({});
 const warehouseMap = ref<Record<string, string>>({});
 const orgUnitMap = ref<Record<string, string>>({});
+const adminMap = ref<Record<string, string>>({});
 
 const toIdArray = (arr: any) =>
   (Array.isArray(arr) ? arr : [])
@@ -91,12 +93,13 @@ const buildNameMap = (list: any[], idKey: string, nameKeys: string[]) => {
 const ensureOptionMaps = async () => {
   if (optionMapsLoaded.value) return;
 
-  const [codes, vendors, locations, warehouses, orgUnits] = await Promise.all([
+  const [codes, vendors, locations, warehouses, orgUnits, admins] = await Promise.all([
     fetchSysCodeList({ id: AM_ASSET_CATEGORY_TYPE_ID, status: "1" }),
     fetchAmVendorList({ status: "1" }),
     fetchAmLocationList({ status: "1" }),
     fetchAmWarehouseList({ status: "1" }),
     fetchOrgUnitList({ page: 1, limit: 1000 }),
+    fetchAdminList({ page: 1, limit: 1000 }),
   ]);
 
   categoryMap.value = buildNameMap(codes || [], "id", ["name"]);
@@ -104,9 +107,16 @@ const ensureOptionMaps = async () => {
   locationMap.value = buildNameMap(locations || [], "id", ["name", "locationName"]);
   warehouseMap.value = buildNameMap(warehouses || [], "id", ["name", "warehouseName"]);
   orgUnitMap.value = buildNameMap(orgUnits || [], "id", ["name"]);
+  adminMap.value = buildNameMap(admins || [], "id", ["fullName", "loginAccount"]);
 
   optionMapsLoaded.value = true;
 };
+
+const managerText = computed(() => {
+  const id = String(formData.value?.managerId ?? "");
+  if (!id || id === "0") return "-";
+  return adminMap.value[id] || id;
+});
 
 const resolveScope = async () => {
   Object.assign(scopeView, {
@@ -160,6 +170,7 @@ const openModal = async (rowOrId: any) => {
   loading.value = true;
   try {
     formData.value = (await fetchAmMaintenancePlanById(String(id))) || {};
+    await ensureOptionMaps(); // 用于管理员名称/范围条件名称映射
     await resolveScope();
   } finally {
     loading.value = false;
@@ -188,6 +199,7 @@ defineExpose({ openModal });
         <el-descriptions-item label="周期类型">{{ cycleText(formData.cycleType) }}</el-descriptions-item>
         <el-descriptions-item label="周期值">{{ formData.cycleValue ?? "-" }}</el-descriptions-item>
 
+        <el-descriptions-item label="保养管理员">{{ managerText }}</el-descriptions-item>
         <el-descriptions-item label="下次执行">{{ formData.nextRunTime || "-" }}</el-descriptions-item>
         <el-descriptions-item label="创建时间">{{ formData.createTime || "-" }}</el-descriptions-item>
 

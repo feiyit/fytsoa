@@ -47,13 +47,13 @@ watch(
       editorContent.value = newVal;
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 watch(
   () => editorContent.value,
   (val) => {
     emit("update:modelValue", val);
-  }
+  },
 );
 function onInit(e: any) {
   emit("initialized", e.target);
@@ -107,6 +107,7 @@ const getEditorConfig = (dark: boolean) => ({
     });
   },
   paste_data_images: true,
+  valid_elements: "*[*]",
 });
 
 const editorInit = ref(getEditorConfig(isDarkMode()));

@@ -37,6 +37,8 @@ const formData = reactive<any>({
   brand: "",
   model: "",
   serialNo: "",
+  originalValue: 0,
+  netBookValue: 0,
   status: 1,
   remark: "",
 });
@@ -139,6 +141,8 @@ const resetForm = () => {
     brand: "",
     model: "",
     serialNo: "",
+    originalValue: 0,
+    netBookValue: 0,
     status: 1,
     remark: "",
   });
@@ -316,12 +320,44 @@ defineExpose({ openModal });
         </el-col>
 
         <el-col :span="12">
+          <el-form-item label="资产原值">
+            <el-input-number
+              v-model="formData.originalValue"
+              :min="0"
+              :precision="2"
+              :step="0.01"
+              controls-position="right"
+              style="width: 100%"
+              placeholder="请输入资产原值"
+            />
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="12">
+          <el-form-item label="资产净值">
+            <el-input-number
+              v-model="formData.netBookValue"
+              :min="0"
+              :precision="2"
+              :step="0.01"
+              controls-position="right"
+              style="width: 100%"
+              placeholder="请输入资产净值"
+            />
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="12">
           <el-form-item label="状态">
             <el-select v-model="formData.status" style="width: 100%">
-              <el-option label="在用" :value="1" />
-              <el-option label="闲置" :value="2" />
-              <el-option label="维修" :value="3" />
-              <el-option label="报废" :value="4" />
+              <el-option label="在库" :value="1" />
+              <el-option label="在用" :value="2" />
+              <el-option label="借出" :value="3" />
+              <el-option label="维修中" :value="4" />
+              <el-option label="闲置" :value="5" />
+              <el-option label="在途" :value="6" />
+              <el-option label="处置中" :value="7" />
+              <el-option label="已处置" :value="8" />
             </el-select>
           </el-form-item>
         </el-col>

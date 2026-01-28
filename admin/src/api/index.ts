@@ -7,6 +7,8 @@ export * from './sys/admin';
 export * from './sys/role';
 export * from './sys/logs';
 export * from './sys/safety';
+export * from './sys/quartz';
+export * from './sys/notice';
 // 工作流相关接口
 export * from './wf';
 // 资产模块相关接口

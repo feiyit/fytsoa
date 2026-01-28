@@ -12,6 +12,7 @@ import { fetchAmLocationList } from "@/api/am/location";
 import { fetchAmWarehouseList } from "@/api/am/warehouse";
 import { fetchAmVendorList } from "@/api/am/vendor";
 import { fetchOrgUnitList } from "@/api";
+import { fetchAdminList } from "@/api";
 import { changeTree, generateCode } from "@/utils/tools";
 
 const formRef = ref();
@@ -37,6 +38,7 @@ const locationOptions = ref<any[]>([]);
 const warehouseOptions = ref<any[]>([]);
 const vendorOptions = ref<any[]>([]);
 const orgOptions = ref<any[]>([]);
+const adminOptions = ref<any[]>([]);
 
 const scopeCategoryIds = ref<string[]>([]);
 const scopeLocationIds = ref<string[]>([]);
@@ -51,6 +53,7 @@ const formData = reactive<any>({
   name: "",
   cycleType: "MONTH",
   cycleValue: 1,
+  managerId: undefined as any,
   nextRunTime: undefined as any,
   isEnabled: true,
   scopeJson: "{}",
@@ -117,6 +120,7 @@ const validateScope = (_rule: any, _value: any, callback: any) => {
 const rules = {
   planNo: [{ required: true, message: "请输入计划编号", trigger: "blur" }],
   name: [{ required: true, message: "请输入计划名称", trigger: "blur" }],
+  managerId: [{ required: true, message: "请选择保养管理员", trigger: "change" }],
   scopeJson: [{ validator: validateScope, trigger: "change" }],
 };
 
@@ -141,6 +145,7 @@ const loadOptions = async () => {
   locationOptions.value = (await fetchAmLocationList({ status: "1" })) || [];
   warehouseOptions.value = (await fetchAmWarehouseList({ status: "1" })) || [];
   vendorOptions.value = (await fetchAmVendorList({ status: "1" })) || [];
+  adminOptions.value = (await fetchAdminList({ page: 1, limit: 1000 })) || [];
 
   // 组织机构树
   const org = await fetchOrgUnitList({ page: 1, limit: 1000 });
@@ -251,6 +256,7 @@ const resetForm = () => {
     name: "",
     cycleType: "MONTH",
     cycleValue: 1,
+    managerId: undefined,
     nextRunTime: undefined,
     isEnabled: true,
     scopeJson: "{}",
@@ -331,6 +337,25 @@ defineExpose({ openModal });
             />
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item label="保养管理员" prop="managerId">
+            <el-select
+              v-model="formData.managerId"
+              placeholder="请选择保养管理员"
+              filterable
+              clearable
+              style="width: 100%"
+            >
+              <el-option
+                v-for="u in adminOptions"
+                :key="String(u.id)"
+                :label="u.fullName || u.loginAccount || String(u.id)"
+                :value="u.id"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+
         <el-col :span="12">
           <el-form-item label="启用">
             <el-switch
